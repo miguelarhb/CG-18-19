@@ -20,8 +20,8 @@ ortogonais. Para selecionar qual das câmaras está activa usam-se
 as teclas ‘1’ a ‘3’.
 
 3. Permitir ao utilizador movimentar a cadeira com o teclado
-utilizando as teclas das setas para virar para esquerda ‘ ‘ e
-direita ‘‘, assim com o para cima ‘’ ou para baixo ‘’. A cadeira
+utilizando as teclas das setas para virar para esquerda e
+direita, assim com o para cima ou para baixo. A cadeira
 não deve atingir a velocidade máxima imediatamente após
 pressionar a tecla ou parar quando se larga, mas sim acelerar e
 desacelerar de forma natural. Ou seja, deve ter um movimento
