@@ -4,6 +4,8 @@ var camera, scene, renderer;
 
 var geometry, material, mesh;
 
+var chair;
+
 
 function addTableLeg(obj, x, y, z) {
     'use strict';
@@ -24,10 +26,15 @@ function addTableTop(obj, x, y, z) {
 
 function addChairWheels(obj, x, y, z) {
     'use strict';
-    geometry = new THREE.TorusGeometry(1, 0.3, 30, 10);
+    geometry = new THREE.TorusGeometry(1, 0.3, 30);
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
+    /*mesh.rotation.x=10;
+    mesh.rotation.y=10;      ROTATION DAS RODAS
+    mesh.rotation.z=10;*/
+    
     obj.add(mesh);
+
 }
 
 function addChairBody(obj, x, y, z) {
@@ -102,20 +109,20 @@ function createTable(x, y, z) {
 function createChair(x, y, z) {
     'use strict';
 
-    var chair = new THREE.Object3D();
+    chair = new THREE.Object3D();
 
     material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
 
-    addChairBody(chair, 0, 5, 0);
-    addChairBack(chair, 0, 20, 7.5);
-    addChairLeg(chair, -9, -5, -9);
-    addChairLeg(chair, -9, -5, 9);
-    addChairLeg(chair, 9, -5, 9);
-    addChairLeg(chair, 9, -5, -9);
-    addChairWheels(chair, -9, -10, -9);
-    addChairWheels(chair, -9, -10, 9);
-    addChairWheels(chair, 9, -10, 9);
-    addChairWheels(chair, 9, -10, -9);
+    addChairBody(chair, 0, 10, 0);
+    addChairBack(chair, 0, 25, 7.5);
+    addChairLeg(chair, -9, 0, -9);
+    addChairLeg(chair, -9, 0, 9);
+    addChairLeg(chair, 9, 0, 9);
+    addChairLeg(chair, 9, 0, -9);
+    addChairWheels(chair, -9, -5, -9);
+    addChairWheels(chair, -9, -5, 9);
+    addChairWheels(chair, 9, -5, 9);
+    addChairWheels(chair, 9, -5, -9);
 
     scene.add(chair);
 
@@ -154,15 +161,38 @@ function createScene() {
     createLamp(27, 0, -45);
 }
 
+function createCamera2() {
+    'use strict';
+    camera = new THREE.PerspectiveCamera(70,
+                                         window.innerWidth / window.innerHeight,
+                                         1,
+                                         1000);
+    camera.position.x = 0;
+    camera.position.y = 0;
+    camera.position.z = -125;
+    camera.lookAt(scene.position);
+}
 function createCamera() {
     'use strict';
     camera = new THREE.PerspectiveCamera(70,
                                          window.innerWidth / window.innerHeight,
                                          1,
                                          1000);
-    camera.position.x = 50;
-    camera.position.y = 50;
-    camera.position.z = 50;
+    camera.position.x = 0;
+    camera.position.y = 125;
+    camera.position.z = 0;
+    camera.lookAt(scene.position);
+}
+
+function createCamera3() {
+    'use strict';
+    camera = new THREE.PerspectiveCamera(100,
+                                         window.innerWidth / window.innerHeight,
+                                         1,
+                                         1000);
+    camera.position.x = 75;
+    camera.position.y = 0;
+    camera.position.z = 0;
     camera.lookAt(scene.position);
 }
 
@@ -177,11 +207,74 @@ function onResize() {
     }
 
 }
-
 function render() {
     'use strict';
     renderer.render(scene, camera);
 }
+
+function onKeyDown(e) {
+    'use strict';
+    
+    switch (e.keyCode) {
+
+    case 40:
+    		chair.position.z += 1; //seta baixo
+    		//chair.linear_velocity.set( 1, 2, 3 );
+    		break;
+    case 38:
+    		chair.position.z -= 1; //seta cima
+    		break;
+    case 39:
+    		chair.position.x += 1; //seta direita
+    		break;
+    case 37:
+    		chair.position.x -= 1; //seta esquerda
+    		break;
+    case 49: //1
+    	    createScene();
+            createCamera();
+    
+            render();
+            break;
+    case 50://2
+    		createScene();
+            createCamera2();
+    
+            render();
+            break;
+    case 51://3
+    		createScene();
+            createCamera3();
+    
+            render();
+            break;
+    case 65: //A
+    case 97: //a
+
+        scene.traverse(function (node) {
+
+            if (node instanceof THREE.Mesh) {
+                node.material.wireframe = !node.material.wireframe;
+            }
+        });
+        break;
+/*    case 83:  //S
+    case 115: //s
+        ball.userData.jumping = !ball.userData.jumping;
+        break;*/
+    case 69:  //E
+    case 101: //e
+ 
+        scene.traverse(function (node) {
+            if (node instanceof THREE.AxisHelper) {
+                node.visible = !node.visible;
+            }
+        });
+        break;
+    }
+}
+
+
 
 function init() {
     'use strict';
@@ -196,6 +289,7 @@ function init() {
 
     render();
 
+    window.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", onResize);
 }
 
