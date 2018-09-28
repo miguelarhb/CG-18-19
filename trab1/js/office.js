@@ -32,9 +32,7 @@ function addChairWheels(obj, x, y, z) {
     /*mesh.rotation.x=10;
     mesh.rotation.y=10;      ROTATION DAS RODAS
     mesh.rotation.z=10;*/
-    
     obj.add(mesh);
-
 }
 
 function addChairBody(obj, x, y, z) {
@@ -214,9 +212,19 @@ function render() {
 
 function onKeyDown(e) {
     'use strict';
-    
+
     switch (e.keyCode) {
 
+    case 65: //A
+    case 97: //a
+
+        scene.traverse(function (node) {
+
+            if (node instanceof THREE.Mesh) {
+                node.material.wireframe = !node.material.wireframe;
+            }
+        });
+        break;
     case 40:
     		chair.position.z += 1; //seta baixo
     		//chair.linear_velocity.set( 1, 2, 3 );
@@ -233,38 +241,29 @@ function onKeyDown(e) {
     case 49: //1
     	    createScene();
             createCamera();
-    
+
             render();
             break;
     case 50://2
     		createScene();
             createCamera2();
-    
+
             render();
             break;
     case 51://3
     		createScene();
             createCamera3();
-    
+
             render();
             break;
-    case 65: //A
-    case 97: //a
 
-        scene.traverse(function (node) {
-
-            if (node instanceof THREE.Mesh) {
-                node.material.wireframe = !node.material.wireframe;
-            }
-        });
-        break;
 /*    case 83:  //S
     case 115: //s
         ball.userData.jumping = !ball.userData.jumping;
         break;*/
     case 69:  //E
     case 101: //e
- 
+
         scene.traverse(function (node) {
             if (node instanceof THREE.AxisHelper) {
                 node.visible = !node.visible;
