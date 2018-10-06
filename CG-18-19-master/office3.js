@@ -461,14 +461,62 @@ function checkKey() {
     		//chair.rotation.y=0;
     		newPosUp(1);
     	}  
-    	if(map[37]){
+    	if(map[37] && accelarateSpeed==0){
     		//chair.rotation.y=Math.PI/2;
     		newPosLeft(1);
     	}  	
-    	if(map[39]){
+    	if(map[39] && accelarateSpeed==0){
     		//chair.rotation.y=-Math.PI/2;
     		newPosRight(1);
     	}
+        if(map[37] && accelarateSpeed>0 && chair.front==true){
+                teta+=0.2;
+                chair.rotation.y+= 0.2*Math.PI/180;
+                chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate);
+                if(accelarateSpeed<=0){
+                    accelarateSpeed=0;
+                    chair.front=false;
+                }
+
+        }
+        if(map[39] && accelarateSpeed>0 && chair.front==true){
+                teta-=0.2;
+                chair.rotation.y-= 0.2*Math.PI/180;
+                chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate);
+                if(accelarateSpeed<=0){
+                    accelarateSpeed=0;
+                    chair.front=false;
+                }
+
+        }
+        if(map[37] && accelarateSpeed>0 && chair.back==true){
+                teta+=0.2;
+                chair.rotation.y+= 0.2*Math.PI/180;
+                chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate);
+                if(accelarateSpeed<=0){
+                    accelarateSpeed=0;
+                    chair.front=false;
+                }
+
+        }
+        if(map[39] && accelarateSpeed>0 && chair.back==true){
+                teta-=0.2;
+                chair.rotation.y-= 0.2*Math.PI/180;
+                chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate);
+                if(accelarateSpeed<=0){
+                    accelarateSpeed=0;
+                    chair.front=false;
+                }
+
+        }
         if(map[40]&&accelarateSpeed>0&&chair.front==true){
                 
                 chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
