@@ -209,16 +209,16 @@ function newPosRight(tipo) {
 	side(39);
 
     
-    teta-=0.2;
-    chair.rotation.y-= 0.2*Math.PI/180;
+    teta-=0.5;
+    chair.rotation.y-= 0.5*Math.PI/180;
     //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
 
 }
 function newPosLeft(tipo) {
 	side(37);
     //console.log(teta)
-    teta+=0.2;
-    chair.rotation.y+= 0.2*Math.PI/180;
+    teta+=0.5;
+    chair.rotation.y+= 0.5*Math.PI/180;
     //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
 }
 function newPosUp(tipo) {
@@ -470,8 +470,8 @@ function checkKey() {
     		newPosRight(1);
     	}
         if(map[37] && accelarateSpeed>0 && chair.front==true){
-                teta+=0.2;
-                chair.rotation.y+= 0.2*Math.PI/180;
+                teta+=0.5;
+                chair.rotation.y+= 0.5*Math.PI/180;
                 chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
                 chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
                 accelarateSpeed-=(chair.desaccelarate);
@@ -482,8 +482,8 @@ function checkKey() {
 
         }
         if(map[39] && accelarateSpeed>0 && chair.front==true){
-                teta-=0.2;
-                chair.rotation.y-= 0.2*Math.PI/180;
+                teta-=0.5;
+                chair.rotation.y-= 0.5*Math.PI/180;
                 chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
                 chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
                 accelarateSpeed-=(chair.desaccelarate);
@@ -494,8 +494,8 @@ function checkKey() {
 
         }
         if(map[37] && accelarateSpeed>0 && chair.back==true){
-                teta+=0.2;
-                chair.rotation.y+= 0.2*Math.PI/180;
+                teta+=0.5;
+                chair.rotation.y+= 0.5*Math.PI/180;
                 chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
                 chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
                 accelarateSpeed-=(chair.desaccelarate);
@@ -506,8 +506,8 @@ function checkKey() {
 
         }
         if(map[39] && accelarateSpeed>0 && chair.back==true){
-                teta-=0.2;
-                chair.rotation.y-= 0.2*Math.PI/180;
+                teta-=0.5;
+                chair.rotation.y-= 0.5*Math.PI/180;
                 chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
                 chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
                 accelarateSpeed-=(chair.desaccelarate);
@@ -550,8 +550,8 @@ function checkKey() {
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
-    		teta-=0.2;
-    		chair.rotation.y-= 0.2*Math.PI/180;
+    		teta-=0.5;
+    		chair.rotation.y-= 0.5*Math.PI/180;
     		chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
    			chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
     	}
@@ -563,8 +563,8 @@ function checkKey() {
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
-    		teta-=0.2;
-    		chair.rotation.y-= 0.2*Math.PI/180;
+    		teta-=0.5;
+    		chair.rotation.y-= 0.5*Math.PI/180;
     		chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
    			chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
     	}
@@ -576,8 +576,8 @@ function checkKey() {
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
-    		teta+=0.2;
-    		chair.rotation.y+= 0.2*Math.PI/180;
+    		teta+=0.5;
+    		chair.rotation.y+= 0.5*Math.PI/180;
     		chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
    			chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
     	}
@@ -589,8 +589,8 @@ function checkKey() {
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
-    		teta+=0.2;
-    		chair.rotation.y+= 0.2*Math.PI/180;
+    		teta+=0.5;
+    		chair.rotation.y+= 0.5*Math.PI/180;
     		chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
    			chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
     	}
