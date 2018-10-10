@@ -1,7 +1,7 @@
 /*global THREE, requestAnimationFrame, console*/
 
 var camera, scene, renderer;
-
+var camera1, camera2,camera3
 var geometry, material, mesh;
 
 var chair, floor,lamp,table;
@@ -15,7 +15,7 @@ var teta=0;
 function addTableLeg(obj, x, y, z) {
     'use strict';
 
-    geometry = new THREE.CylinderGeometry(2, 2, 20);
+    geometry = new THREE.CylinderGeometry(2, 2, 50);
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
     obj.add(mesh);
@@ -23,7 +23,7 @@ function addTableLeg(obj, x, y, z) {
 
 function addTableTop(obj, x, y, z) {
     'use strict';
-    geometry = new THREE.CubeGeometry(60, 2, 30);
+    geometry = new THREE.CubeGeometry(60, 5, 30);
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
     obj.add(mesh);
@@ -47,7 +47,7 @@ function addChairWheels(obj, x, y, z) {
 function addChairBody(obj, x, y, z) {
     'use strict';
     geometry = new THREE.CubeGeometry(20, 10, 20);
-    material = new THREE.MeshBasicMaterial({ color: 0xFF0000, wireframe: true });
+    material = new THREE.MeshBasicMaterial({ color: 0xF0E68C, wireframe: true });
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
     obj.add(mesh);
@@ -55,7 +55,7 @@ function addChairBody(obj, x, y, z) {
 
 function addChairBack(obj, x, y, z) {
     'use strict';
-    geometry = new THREE.CubeGeometry(20, 20, 5);
+    geometry = new THREE.CubeGeometry(20, 40, 5);
     material = new THREE.MeshBasicMaterial({ color: 0xF0E68C, wireframe: true });
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
@@ -64,8 +64,8 @@ function addChairBack(obj, x, y, z) {
 
 function addChairLeg(obj, x, y, z) {
     'use strict';
-    geometry = new THREE.CubeGeometry(2, 10, 2);
-    material = new THREE.MeshBasicMaterial({ color: 0xFF0000, wireframe: true });
+    geometry = new THREE.CubeGeometry(2, 18, 2);
+    material = new THREE.MeshBasicMaterial({ color: 0xF0E68C, wireframe: true });
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
     obj.add(mesh);
@@ -82,7 +82,27 @@ function addLampBase(obj, x, y, z) {
 
 function addLampCilinder(obj, x, y, z) {
     'use strict';
-    geometry = new THREE.CylinderGeometry(1, 1, 40, 64);
+    geometry = new THREE.CylinderGeometry(0.5, 0.5, 80, 64);
+    material = new THREE.MeshBasicMaterial({ color: 0xD3D3D3, wireframe: true });
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y , z);
+    obj.add(mesh);
+
+}
+
+function addLampPullerCilinder(obj, x, y, z) {
+    'use strict';
+    geometry = new THREE.CylinderGeometry(0.2, 0.2, 1, 64);
+    material = new THREE.MeshBasicMaterial({ color: 0xD3D3D3, wireframe: true });
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y , z);
+    obj.add(mesh);
+
+}
+
+function addLampSphere(obj, x, y, z) {
+    'use strict';
+    geometry = new THREE.SphereGeometry(0.1, 23, 18);
     material = new THREE.MeshBasicMaterial({ color: 0xD3D3D3, wireframe: true });
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y , z);
@@ -92,7 +112,7 @@ function addLampCilinder(obj, x, y, z) {
 
 function addLampTop(obj, x, y, z){
     'use strict';
-    geometry = new THREE.ConeGeometry( 6, 6, 64);
+    geometry = new THREE.CylinderGeometry( 4, 6, 15, 10);
     material = new THREE.MeshBasicMaterial({ color: 0x000080, wireframe: true });
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x,y,z);
@@ -118,11 +138,11 @@ function createTable(x, y, z) {
 
     material = new THREE.MeshBasicMaterial({ color: 0x8B4513, wireframe: true });
 
-    addTableTop(table, 0, 13, 0);
-    addTableLeg(table, -25, 2, -10);
-    addTableLeg(table, -25, 2, 10);
-    addTableLeg(table, 25, 2, 10);
-    addTableLeg(table, 25, 2, -10);
+    addTableTop(table, 0, 43, 0);
+    addTableLeg(table, -25,18.5, -10);
+    addTableLeg(table, -25, 18.5, 10);
+    addTableLeg(table, 25, 18.5, 10);
+    addTableLeg(table, 25, 18.5, -10);
 
     scene.add(table);
 
@@ -138,12 +158,12 @@ function createChair(x, y, z) {
 
     material = new THREE.MeshBasicMaterial({ color: 0xF0E68C, wireframe: true });
 
-    addChairBody(chair, 0, 10, 0);
-    addChairBack(chair, 0, 25, 7.5);
-    addChairLeg(chair, -9, 0, -9);
-    addChairLeg(chair, -9, 0, 9);
-    addChairLeg(chair, 9, 0, 9);
-    addChairLeg(chair, 9, 0, -9);
+    addChairBody(chair, 0, 20, 0);
+    addChairBack(chair, 0, 45, 7.5);
+    addChairLeg(chair, -9, 6, -9);
+    addChairLeg(chair, -9, 6, 9);
+    addChairLeg(chair, 9, 6, 9);
+    addChairLeg(chair, 9, 6, -9);
     addChairWheels(chair, -9, -5, -9);
     addChairWheels(chair, -9, -5, 9);
     addChairWheels(chair, 9, -5, 9);
@@ -157,7 +177,7 @@ function createChair(x, y, z) {
 
    	chair.speedX = 0;
     chair.speedZ = 0;    
-    chair.accelarate = 0.01;
+    chair.accelarate = 0.005;
     chair.desaccelarate=0.005;
 
     
@@ -187,32 +207,19 @@ function side(lado){
 }
 function newPosRight(tipo) {
 	side(39);
-	//console.log(Math.cos(45/180*Math.PI));
-	/*if(tipo==1)
-    	accelarateSpeedX += chair.accelarate;
 
-    if(accelarateSpeedX>=maxspeed){
-    	
-    	accelarateSpeedX=maxspeed;
-    }*/
-    console.log(teta)
-    teta-=0.2;
-    chair.rotation.y-= 0.2*Math.PI/180;
-    console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
+    
+    teta-=0.5;
+    chair.rotation.y-= 0.5*Math.PI/180;
+    //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
 
 }
 function newPosLeft(tipo) {
 	side(37);
-/*	if(tipo==1)
-    	accelarateSpeedX += chair.accelarate;
-
-    if(accelarateSpeedX>=maxspeed)
-    	accelarateSpeedX=maxspeed;
-    chair.position.x -= chair.speedX + accelarateSpeedX;*/
-        console.log(teta)
-    teta+=0.2;
-    chair.rotation.y+= 0.2*Math.PI/180;
-    console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
+    //console.log(teta)
+    teta+=0.5;
+    chair.rotation.y+= 0.5*Math.PI/180;
+    //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
 }
 function newPosUp(tipo) {
 	side(38);
@@ -243,9 +250,27 @@ function createLamp(x,y,z){
 
     //material = new THREE.MeshBasicMaterial({ color: 0xFFE4C4, wireframe: true });
 
-    addLampCilinder(lamp, 8, 20, 8);
+    addLampCilinder(lamp, 8, 40, 8);
     addLampBase(lamp, 8, 0, 8);
-    addLampTop(lamp, 8, 37.3, 8);
+    addLampTop(lamp, 8, 80, 8);
+    addLampSphere(lamp, 12, 72.5, 10);
+    addLampSphere(lamp, 12, 72, 10);
+	addLampSphere(lamp, 12, 71.5, 10);
+	addLampSphere(lamp, 12, 71, 10);
+	addLampSphere(lamp, 12, 70.5, 10);
+	addLampSphere(lamp, 12, 70, 10);
+	addLampSphere(lamp, 12, 69.5, 10);
+	addLampSphere(lamp, 12, 69, 10);
+    addLampSphere(lamp, 12, 68.5, 10);
+    addLampSphere(lamp, 12, 68, 10);
+    addLampSphere(lamp, 12, 67.5, 10);
+    addLampSphere(lamp, 12, 67, 10);
+    addLampSphere(lamp, 12, 66.5, 10);
+    addLampSphere(lamp, 12, 66, 10);
+    addLampSphere(lamp, 12, 65.5, 10);
+    addLampSphere(lamp, 12, 65, 10);
+	addLampPullerCilinder(lamp, 12, 64.5, 10);
+
 
     scene.add(lamp);
 
@@ -283,40 +308,21 @@ function createGame(){
 	 createScene();
 	 createChair(0, 6, 0);
 }
-function createCamera2() {
-    'use strict';
-    camera = new THREE.PerspectiveCamera(70,
-                                         window.innerWidth / window.innerHeight,
-                                         1,
-                                         1000);
-    camera.position.x = 0;
-    camera.position.y = 0;
-    camera.position.z = -125;
-    camera.lookAt(scene.position);
-}
+
+
 function createCamera() {
     'use strict';
-    camera = new THREE.PerspectiveCamera(70,
-                                         window.innerWidth / window.innerHeight,
-                                         1,
-                                         1000);
-    camera.position.x = 0;
-    camera.position.y = 125;
-    camera.position.z = 0;
-    camera.lookAt(scene.position);
+    camera1 = new THREE.OrthographicCamera(-100, 100, 100, -100, 40, 10000);
+    camera1.position.y = 200;
+    camera2 = new THREE.OrthographicCamera(-100, 100, 100, -100, 40, 10000);
+    camera2.position.z = -200;
+    camera3 = new THREE.OrthographicCamera(-100, 100, 100, -100, 40, 10000);
+    camera3.position.x = 200;
+
+   // camera.lookAt(scene.position);
 }
 
-function createCamera3() {
-    'use strict';
-    camera = new THREE.PerspectiveCamera(100,
-                                         window.innerWidth / window.innerHeight,
-                                         1,
-                                         1000);
-    camera.position.x = 75;
-    camera.position.y = 0;
-    camera.position.z = 0;
-    camera.lookAt(scene.position);
-}
+
 
 
 function onResize() {
@@ -328,6 +334,7 @@ function onResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
     }
+    camera.lookAt(scene.position);
 
 }
 function render() {
@@ -357,23 +364,26 @@ function onKeyDown(e) {
     	    createScene();
     	    
     	    createChair(chair.position.x,chair.position.y,chair.position.z);
-            createCamera();
-    
-            animate();
+            chair.rotation.y= teta*Math.PI/180;
+            camera=camera1;
+            onResize();
+            render();
             break;
     case 50://2
     		createScene();
     		createChair(chair.position.x,chair.position.y,chair.position.z);
-            createCamera2();
-    
+            chair.rotation.y= teta*Math.PI/180;
+            camera=camera2;
+            onResize();
             render();
             break;
     case 51://3
     		
     		createScene();
     		createChair(chair.position.x,chair.position.y,chair.position.z);
-            createCamera3();
-            
+            chair.rotation.y= teta*Math.PI/180;
+            camera=camera3;
+            onResize();
     		
     
             render();
@@ -417,21 +427,12 @@ function checkKey() {
 	if(seeiffalse()){
 	
 		if(accelarateSpeed>0 ){
-			//console.log("direita",chair.right,"esquerda",chair.left,)
-			/*if(chair.right){
-				//console.log("antes entrei direita",chair.right);
-				chair.position.x += chair.speedX + accelarateSpeedX;
-			}*/
 			if(chair.front){
 				//console.log("antes entrei cima",chair.rigth, chair.left);
 				    chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
     				chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);		
 			}
-			/*if(chair.left){
-				//console.log("antes entrei esquerda");
-				chair.position.x -= chair.speedX + accelarateSpeedX;
 
-			}*/
 			if(chair.back){
    				chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
     			chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
@@ -450,22 +451,97 @@ function checkKey() {
 
 
 	else{
-        if(map[40]){
+
+        if(map[40]&&(chair.front==false||accelarateSpeed==0)){
+            //console.log(accelarateSpeed);
         	//chair.rotation.y=Math.PI;
     		newPosDown(1);
     	}
-    	if(map[38]){
+    	if(map[38]&& (chair.back==false||accelarateSpeed==0)){
     		//chair.rotation.y=0;
     		newPosUp(1);
     	}  
-    	if(map[37]){
+    	if(map[37] && accelarateSpeed==0){
     		//chair.rotation.y=Math.PI/2;
     		newPosLeft(1);
     	}  	
-    	if(map[39]){
+    	if(map[39] && accelarateSpeed==0){
     		//chair.rotation.y=-Math.PI/2;
     		newPosRight(1);
     	}
+        if(map[37] && accelarateSpeed>0 && chair.front==true){
+                teta+=0.5;
+                chair.rotation.y+= 0.5*Math.PI/180;
+                chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate);
+                if(accelarateSpeed<=0){
+                    accelarateSpeed=0;
+                    chair.front=false;
+                }
+
+        }
+        if(map[39] && accelarateSpeed>0 && chair.front==true){
+                teta-=0.5;
+                chair.rotation.y-= 0.5*Math.PI/180;
+                chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate);
+                if(accelarateSpeed<=0){
+                    accelarateSpeed=0;
+                    chair.front=false;
+                }
+
+        }
+        if(map[37] && accelarateSpeed>0 && chair.back==true){
+                teta+=0.5;
+                chair.rotation.y+= 0.5*Math.PI/180;
+                chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate);
+                if(accelarateSpeed<=0){
+                    accelarateSpeed=0;
+                    chair.front=false;
+                }
+
+        }
+        if(map[39] && accelarateSpeed>0 && chair.back==true){
+                teta-=0.5;
+                chair.rotation.y-= 0.5*Math.PI/180;
+                chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate);
+                if(accelarateSpeed<=0){
+                    accelarateSpeed=0;
+                    chair.front=false;
+                }
+
+        }
+        if(map[40]&&accelarateSpeed>0&&chair.front==true){
+                
+                chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate+0.005);
+                if(accelarateSpeed<=0){
+                   // console.log("frente antes de parar " , chair.front);
+                    accelarateSpeed=0;
+                    side(40);
+                   // console.log("frente depois de parar " , chair.front);
+                    //console.log("atras depois de parar " , chair.back);
+                }
+        }
+        if(map[38]&&accelarateSpeed>0&&chair.back==true){
+                
+                chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
+                chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
+                accelarateSpeed-=(chair.desaccelarate+0.005);
+                if(accelarateSpeed<=0){
+                   // console.log("atras antes de parar " , chair.back);
+                    accelarateSpeed=0;
+                    side(38);
+                   // console.log("atras depois de parar " , chair.back);
+                }
+        }
     	if(map[39]&&map[38]){
     		side(39);
     		chair.front=true;
@@ -474,8 +550,8 @@ function checkKey() {
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
-    		teta-=0.2;
-    		chair.rotation.y-= 0.2*Math.PI/180;
+    		teta-=0.5;
+    		chair.rotation.y-= 0.5*Math.PI/180;
     		chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
    			chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
     	}
@@ -487,8 +563,8 @@ function checkKey() {
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
-    		teta-=0.2;
-    		chair.rotation.y-= 0.2*Math.PI/180;
+    		teta-=0.5;
+    		chair.rotation.y-= 0.5*Math.PI/180;
     		chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
    			chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
     	}
@@ -500,8 +576,8 @@ function checkKey() {
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
-    		teta+=0.2;
-    		chair.rotation.y+= 0.2*Math.PI/180;
+    		teta+=0.5;
+    		chair.rotation.y+= 0.5*Math.PI/180;
     		chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
    			chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
     	}
@@ -513,8 +589,8 @@ function checkKey() {
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
-    		teta+=0.2;
-    		chair.rotation.y+= 0.2*Math.PI/180;
+    		teta+=0.5;
+    		chair.rotation.y+= 0.5*Math.PI/180;
     		chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
    			chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
     	}
@@ -531,8 +607,10 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     createGame();
-    createCamera();
 
+    createCamera();
+    camera=camera1;
+    camera.lookAt(scene.position);
     render();
 
     window.addEventListener("keydown", onKeyDown);
