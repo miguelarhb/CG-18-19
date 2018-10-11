@@ -39,10 +39,10 @@ function addChairWheels(obj, x, y, z) {
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
     //mesh.rotation.x=10;
-    
-    mesh.rotation.y=Math.PI /2;     
+
+    mesh.rotation.y=Math.PI /2;
     //mesh.rotation.z=10;
-    
+
     obj.add(mesh);
 
 }
@@ -179,24 +179,24 @@ function createChair(x, y, z) {
     chair.position.z = z;
 
    	chair.speedX = 0;
-    chair.speedZ = 0;    
+    chair.speedZ = 0;
     chair.accelarate = 0.5;
     chair.desaccelarate=0.5;
 
-    
+
     chair.right=false;
     chair.left=false;
     chair.front=false;
-    chair.back=false;    
- 
+    chair.back=false;
+
 
 }
 function side(lado){
     chair.right=false;
     chair.left=false;
     chair.front=false;
-    chair.back=false;  		
-	
+    chair.back=false;
+
 	if(lado==39)
 		chair.right=true;
 	if(lado==40)
@@ -204,14 +204,14 @@ function side(lado){
 	if(lado==37)
 		chair.left=true;
 	if(lado==38)
-		chair.front=true;	
-	
+		chair.front=true;
+
 
 }
 function newPosRight(tipo) {
 	side(39);
 
-    
+
     teta-=0.5;
     chair.rotation.y-= 0.5*Math.PI/180;
     //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
@@ -226,11 +226,11 @@ function newPosLeft(tipo) {
 }
 function newPosUp(tipo) {
 	side(38);
-    
+
     now=clock.getDelta();
     console.log(now);
     delta+=now;
-    
+
     accelarateSpeed = chair.accelarate*delta;
     speed+=accelarateSpeed;
     console.log(delta);
@@ -296,7 +296,7 @@ function createScene() {
 
     scene.add(new THREE.AxisHelper(10));
 
-   
+
     createTable(0, 8, -30);
     createLamp(27, 2, -45);
     //createFloor(0,0,0);
@@ -314,7 +314,7 @@ function update(){
 	createChair(chair.position.x,chair.position.y,chair.position.z);
 }
 function createGame(){
-	
+
 	 createScene();
 	 createChair(0, 6, 0);
 }
@@ -350,7 +350,7 @@ function onResize() {
 }
 function render() {
     'use strict';
-    
+
     checkKey();
     renderer.render(scene, camera);
 }
@@ -367,15 +367,15 @@ function onKeyUp(){
 
 function onKeyDown(e) {
     'use strict';
- 
+
     map[e.keyCode]=true;
     clock.start();
     switch (e.keyCode) {
-    	
+
 
     case 49: //1
     	    /*createScene();
-    	    
+
     	    createChair(chair.position.x,chair.position.y,chair.position.z);
             chair.rotation.y= teta*Math.PI/180;*/
             camera=camera1;
@@ -391,14 +391,14 @@ function onKeyDown(e) {
             render();
             break;
     case 51://3
-    		
+
     		/*createScene(); //mudar isto
     		createChair(chair.position.x,chair.position.y,chair.position.z);
             chair.rotation.y= teta*Math.PI/180;*/
             camera=camera3;
             onResize();
-    		
-    
+
+
             render();
             break;
     case 65: //A
@@ -407,14 +407,14 @@ function onKeyDown(e) {
         scene.traverse(function (node) {
 
             if (node instanceof THREE.Mesh) {
-            	
+
                 node.material.wireframe = !node.material.wireframe;
             }
         });
         break;
     case 69:  //E
     case 101: //e
- 
+
         scene.traverse(function (node) {
             if (node instanceof THREE.AxisHelper) {
                 node.visible = !node.visible;
@@ -438,12 +438,12 @@ function checkKey() {
 
 
 	if(seeiffalse()){
-	
+
 		if(accelarateSpeed>0 ){
 			if(chair.front){
 				//console.log("antes entrei cima",chair.rigth, chair.left);
 				    chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
-    				chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);		
+    				chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
 			}
 
 			if(chair.back){
@@ -451,12 +451,12 @@ function checkKey() {
     			chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
     		}
 		//console.log("antes",chair.position.x,"ACELERACAO",accelarateSpeedX);
-	
+
 		//console.log("depois",chair.position.x,"ACELERACAO",accelarateSpeedX);
-		
-		}	
+
+		}
 		accelarateSpeed-=chair.desaccelarate;
-		
+
 
 		if(accelarateSpeed<0)
 			accelarateSpeed=0;
@@ -473,11 +473,11 @@ function checkKey() {
     	if(map[38]&& (chair.back==false||accelarateSpeed==0)){
     		//chair.rotation.y=0;
     		newPosUp(1);
-    	}  
+    	}
     	if(map[37] && accelarateSpeed==0){
     		//chair.rotation.y=Math.PI/2;
     		newPosLeft(1);
-    	}  	
+    	}
     	if(map[39] && accelarateSpeed==0){
     		//chair.rotation.y=-Math.PI/2;
     		newPosRight(1);
@@ -531,7 +531,7 @@ function checkKey() {
 
         }
         if(map[40]&&accelarateSpeed>0&&chair.front==true){
-                
+
                 chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
                 chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
                 accelarateSpeed-=(chair.desaccelarate+0.005);
@@ -544,7 +544,7 @@ function checkKey() {
                 }
         }
         if(map[38]&&accelarateSpeed>0&&chair.back==true){
-                
+
                 chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
                 chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
                 accelarateSpeed-=(chair.desaccelarate+0.005);
@@ -570,7 +570,7 @@ function checkKey() {
     		side(39);
     		chair.back=true;
     		accelarateSpeed += chair.accelarate;
-    
+
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
@@ -583,7 +583,7 @@ function checkKey() {
     		side(37);
     		chair.front=true;
     		accelarateSpeed += chair.accelarate;
-    		
+
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
@@ -596,7 +596,7 @@ function checkKey() {
     		side(37);
     		chair.back=true;
     		accelarateSpeed += chair.accelarate;
-    	
+
     	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
 
