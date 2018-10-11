@@ -203,9 +203,9 @@ function createChair(x, y, z) {
 
 function wheelsRotation(flag, accel){
   for (var e = 6; e != 10; e++){
-    if (flag == 1)                      //chair more speed
+    if (flag == 1)                      //chair front speed
       chair.children[e].rotation.z -= accel;
-    if (flag == -1)                     //chair less speed
+    if (flag == -1)                     //chair back speed
       chair.children[e].rotation.z += accel;
   }
 }
@@ -256,7 +256,7 @@ function newPosUp(tipo) {
   chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
   chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
 
-  wheelsRotation(1, accelarateSpeed*Math.cos(teta*Math.PI/180));
+  wheelsRotation(1, accelarateSpeed);
 }
 
 function newPosDown(tipo) {
@@ -270,7 +270,7 @@ function newPosDown(tipo) {
   chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
   chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
 
-  wheelsRotation(-1, accelarateSpeed*Math.cos(teta*Math.PI/180));
+  wheelsRotation(-1, accelarateSpeed);
 }
 
 function createScene() {
@@ -393,13 +393,16 @@ function checkKey() {
 	if(seeiffalse()){
 		if(accelarateSpeed>0 ){
 			if(chair.front){
-				//console.log("antes entrei cima",chair.rigth, chair.left);
+				//going front continue going less fast
 				    chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
     				chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
+            wheelsRotation(1, accelarateSpeed*Math.cos(teta*Math.PI/180));
+
 			}
 			if(chair.back){
    				chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
     			chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
+          wheelsRotation(-1, accelarateSpeed*Math.cos(teta*Math.PI/180));
     		}
 		}
     accelarateSpeed-=chair.desaccelarate;
