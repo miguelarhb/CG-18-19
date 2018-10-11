@@ -200,16 +200,16 @@ function createChair(x, y, z) {
     chair.back=false;
 
 }
-/*
-function wheelsRotation(flag){
-  for (var e = 6; e != 9; e++){
+
+function wheelsRotation(flag, accel){
+  for (var e = 6; e != 10; e++){
     if (flag == 1)                      //chair more speed
-      chair.children[i].rotate.z += ;
+      chair.children[e].rotation.z -= accel;
     if (flag == -1)                     //chair less speed
-      chair.children[i].rotate.z -= ;
+      chair.children[e].rotation.z += accel;
   }
 }
-*/
+
 
 function side(lado){
     chair.right=false;
@@ -248,23 +248,29 @@ function newPosLeft(tipo) {
 function newPosUp(tipo) {
 	side(38);
 	if(tipo==1)
-    	accelarateSpeed += chair.accelarate;
+    accelarateSpeed += chair.accelarate;
 
   if(accelarateSpeed>=maxspeed)
   	accelarateSpeed=maxspeed;
 
   chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
   chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
+
+  wheelsRotation(1, accelarateSpeed*Math.cos(teta*Math.PI/180));
 }
 
 function newPosDown(tipo) {
 	side(40);
 	if(tipo==1)
     	accelarateSpeed += chair.accelarate;
+
   if(accelarateSpeed>=maxspeed)
   	accelarateSpeed=maxspeed;
+
   chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
   chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
+
+  wheelsRotation(-1, accelarateSpeed*Math.cos(teta*Math.PI/180));
 }
 
 function createScene() {
