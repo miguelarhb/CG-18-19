@@ -37,9 +37,7 @@ function addChairWheels(obj, x, y, z) {
     geometry = new THREE.TorusGeometry(1.5, 0.5, 20, 5);
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
-    //mesh.rotation.x=10;
     mesh.rotation.y=Math.PI /2;
-    //mesh.rotation.z=10;
     obj.add(mesh);
 }
 
@@ -89,7 +87,6 @@ function addLampPullerCilinder(obj, x, y, z) {
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y , z);
     obj.add(mesh);
-
 }
 
 function addLampSphere(obj, x, y, z) {
@@ -98,7 +95,6 @@ function addLampSphere(obj, x, y, z) {
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y , z);
     obj.add(mesh);
-
 }
 
 function addLampTop(obj, x, y, z){
@@ -200,15 +196,6 @@ function createChair(x, y, z) {
 
 }
 
-function wheelsRotation(flag, accel){
-  for (var e = 6; e != 10; e++){
-    if (flag == 1)                      //chair front speed
-      chair.children[e].rotation.z -= accel;
-    if (flag == -1)                     //chair back speed
-      chair.children[e].rotation.z += accel;
-  }
-}
-
 function side(lado){
     chair.right=false;
     chair.left=false;
@@ -224,6 +211,15 @@ function side(lado){
 	if(lado==38)
 		chair.front=true;
 
+}
+
+function wheelsRotation(flag, accel){
+  for (var e = 6; e != 10; e++){
+    if (flag == 1)                      //chair front speed
+      chair.children[e].rotation.z -= accel;
+    if (flag == -1)                     //chair back speed
+      chair.children[e].rotation.z += accel;
+  }
 }
 
 function newPosRight(tipo) {
@@ -398,7 +394,6 @@ function checkKey() {
 				    chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
     				chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
             wheelsRotation(1, accelarateSpeed*Math.cos(teta*Math.PI/180));
-
 			}
 			if(chair.back){
    				chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
