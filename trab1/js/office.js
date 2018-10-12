@@ -6,7 +6,7 @@ var wWidth = window.innerWidth;
 var wHeight = window.innerHeight;
 var originalAspect = wWidth / wHeight;
 var geometry, material, mesh;
-var flagWireframe = true;
+var flagTable, flagLamp, flagChair;
 
 var chair,lamp,table;
 var map={37:false,38:false,39:false,40:false}
@@ -111,32 +111,31 @@ function addLampTop(obj, x, y, z){
 
 function createLamp(x, y, z){
     'use strict'
-
+    flagLamp = 0;
     lamp = new THREE.Object3D();
 
-    material = new THREE.MeshBasicMaterial({ color: 0xFFE4C4, wireframe: flagWireframe });
+    material = new THREE.MeshBasicMaterial({ color: 0xFFE4C4, wireframe: true });
 
-    addLampCilinder(lamp, 8, 20, 8);
-    addLampBase(lamp, 8, -1, 8);
-    addLampTop(lamp, 8, 40, 8);
-    addLampSphere(lamp, 12, 36.5, 10);
-    addLampSphere(lamp, 12, 36, 10);
-    addLampSphere(lamp, 12, 35.5, 10);
-    addLampSphere(lamp, 12, 35, 10);
-    addLampSphere(lamp, 12, 34.5, 10);
-    addLampSphere(lamp, 12, 34, 10);
-    addLampSphere(lamp, 12, 33.5, 10);
-    addLampSphere(lamp, 12, 33, 10);
-    addLampSphere(lamp, 12, 32.5, 10);
-    addLampSphere(lamp, 12, 32, 10);
-    addLampSphere(lamp, 12, 31.5, 10);
-    addLampSphere(lamp, 12, 31, 10);
-    addLampSphere(lamp, 12, 30.5, 10);
-    addLampSphere(lamp, 12, 30, 10);
-    addLampSphere(lamp, 12, 29.5, 10);
-    addLampSphere(lamp, 12, 29, 10);
-	  addLampPullerCilinder(lamp, 12, 28.5, 10);
-
+    addLampCilinder(lamp, 8, 20, 8); flagLamp++;
+    addLampBase(lamp, 8, -1, 8); flagLamp++;
+    addLampTop(lamp, 8, 40, 8); flagLamp++;
+    addLampSphere(lamp, 12, 36.5, 10); flagLamp++;
+    addLampSphere(lamp, 12, 36, 10); flagLamp++;
+    addLampSphere(lamp, 12, 35.5, 10); flagLamp++;
+    addLampSphere(lamp, 12, 35, 10); flagLamp++;
+    addLampSphere(lamp, 12, 34.5, 10); flagLamp++;
+    addLampSphere(lamp, 12, 34, 10); flagLamp++;
+    addLampSphere(lamp, 12, 33.5, 10); flagLamp++;
+    addLampSphere(lamp, 12, 33, 10); flagLamp++;
+    addLampSphere(lamp, 12, 32.5, 10); flagLamp++;
+    addLampSphere(lamp, 12, 32, 10); flagLamp++;
+    addLampSphere(lamp, 12, 31.5, 10); flagLamp++;
+    addLampSphere(lamp, 12, 31, 10); flagLamp++;
+    addLampSphere(lamp, 12, 30.5, 10); flagLamp++;
+    addLampSphere(lamp, 12, 30, 10); flagLamp++;
+    addLampSphere(lamp, 12, 29.5, 10); flagLamp++;
+    addLampSphere(lamp, 12, 29, 10); flagLamp++;
+	  addLampPullerCilinder(lamp, 12, 28.5, 10); flagLamp++;
 
     scene.add(lamp);
 
@@ -147,16 +146,16 @@ function createLamp(x, y, z){
 
 function createTable(x, y, z) {
     'use strict';
-
+    flagTable = 0;
     table = new THREE.Object3D();
 
-    material = new THREE.MeshBasicMaterial({ color: 0x8B4513, wireframe: flagWireframe });
+    material = new THREE.MeshBasicMaterial({ color: 0x8B4513, wireframe: true });
 
-    addTableTop(table, 0, 23, 0);
-    addTableLeg(table, -25, 6.5, -10);
-    addTableLeg(table, -25, 6.5, 10);
-    addTableLeg(table, 25, 6.5, 10);
-    addTableLeg(table, 25, 6.5, -10);
+    addTableTop(table, 0, 23, 0); flagTable++;
+    addTableLeg(table, -25, 6.5, -10); flagTable++;
+    addTableLeg(table, -25, 6.5, 10); flagTable++;
+    addTableLeg(table, 25, 6.5, 10); flagTable++;
+    addTableLeg(table, 25, 6.5, -10); flagTable++;
 
     scene.add(table);
 
@@ -167,21 +166,21 @@ function createTable(x, y, z) {
 
 function createChair(x, y, z) {
     'use strict';
-
+    flagChair = 0;
     chair = new THREE.Object3D();
 
-    material = new THREE.MeshBasicMaterial({ color: 0xF0E68C, wireframe: flagWireframe });
+    material = new THREE.MeshBasicMaterial({ color: 0xF0E68C, wireframe: true });
 
-    addChairBody(chair, 0, 14, 0);
-    addChairBack(chair, 0, 26.5, 7.5);
-    addChairLeg(chair, -9, 4, -9);
-    addChairLeg(chair, -9, 4, 9);
-    addChairLeg(chair, 9, 4, 9);
-    addChairLeg(chair, 9, 4, -9);
-    addChairWheels(chair, -9, -5, -9);
-    addChairWheels(chair, -9, -5, 9);
-    addChairWheels(chair, 9, -5, 9);
-    addChairWheels(chair, 9, -5, -9);
+    addChairBody(chair, 0, 14, 0); flagChair++;
+    addChairBack(chair, 0, 26.5, 7.5); flagChair++;
+    addChairLeg(chair, -9, 4, -9); flagChair++;
+    addChairLeg(chair, -9, 4, 9); flagChair++;
+    addChairLeg(chair, 9, 4, 9); flagChair++;
+    addChairLeg(chair, 9, 4, -9); flagChair++;
+    addChairWheels(chair, -9, -5, -9); flagChair++;
+    addChairWheels(chair, -9, -5, 9); flagChair++;
+    addChairWheels(chair, 9, -5, 9); flagChair++;
+    addChairWheels(chair, 9, -5, -9); flagChair++;
 
     scene.add(chair);
 
@@ -210,7 +209,6 @@ function wheelsRotation(flag, accel){
   }
 }
 
-
 function side(lado){
     chair.right=false;
     chair.left=false;
@@ -229,19 +227,15 @@ function side(lado){
 }
 
 function newPosRight(tipo) {
-
   side(39);
   teta-=0.5;
   chair.rotation.y-= 0.5*Math.PI/180;
-  //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
 }
 
 function newPosLeft(tipo) {
-
   side(37);
   teta+=0.5;
   chair.rotation.y+= 0.5*Math.PI/180;
-  //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
 
 }
 
@@ -293,11 +287,6 @@ function clearScene(){
 	scene.remove(chair);
 	scene.remove(lamp);
 	scene.remove(table);
-}
-
-function update(){
-	createScene();
-	createChair(chair.position.x,chair.position.y,chair.position.z);
 }
 
 function createCamera() {
@@ -362,8 +351,7 @@ function onKeyDown(e) {
         break;
       case 65: //A
       case 97: //a
-        flagWireframe = !flagWireframe;
-        update();                  // !!!!! FIXME !!!!! -- resets --- velocity chair and rotation place
+        switchWireframe();
         break;
       case 69:  //E
       case 101: //e
@@ -374,6 +362,19 @@ function onKeyDown(e) {
         });
         break;
     }
+}
+
+function switchWireframe(){
+  var count;
+  for (count = 0; count != flagTable ; count++){  //comportamento estranho por parte do js a flag devia ter -1
+    table.children[count].material.wireframe = !table.children[count].material.wireframe;
+  }
+  for (count = 0; count != flagLamp - 1; count++){
+    lamp.children[count].material.wireframe = !lamp.children[count].material.wireframe;
+  }
+  for (count = 0; count != flagChair - 1; count++){
+    chair.children[count].material.wireframe = !chair.children[count].material.wireframe;
+  }
 }
 
 function seeiffalse(){
