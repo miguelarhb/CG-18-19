@@ -4,22 +4,11 @@ var camera, scene, renderer;
 var camera1, camera2,camera3
 var geometry, material, mesh;
 
-var chair, floor,lamp,table;
-var map={37:false,38:false,39:false,40:false}
-var maxspeed=10;
-var accelarateSpeedX = 0;
-var accelarateSpeedY=0;
-var accelarateSpeed=0;
-var teta=0;
+var floor,parede1,parede2,parede3,parede4,num;
+var ball=new Array();
 
-function addTableLeg(obj, x, y, z) {
-    'use strict';
 
-    geometry = new THREE.BoxGeometry(10, 2, 50);
-    mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(x, y, z);
-    obj.add(mesh);
-}
+
 
 
 
@@ -33,7 +22,21 @@ class Entity extends THREE.Object3D{
 }
 
 
+class Ball extends Entity{
+    constructor(x,y,z){
+        super();
+        this.pos_x=x;
+        this.pos_z=z;
+        geometry=new THREE.SphereGeometry(Math.sqrt(250*250+125*125)/20,32,32);
+        material=new THREE.MeshBasicMaterial({color:0xDABB01,wireframe:false});
 
+        mesh=new THREE.Mesh(geometry,material);
+        this.add(mesh);
+        this.position.set(x,y+(Math.sqrt(250*250+125*125)/20),z);
+
+        scene.add(this);
+    }
+}
 
 
 class Floor extends Entity {
@@ -42,7 +45,7 @@ class Floor extends Entity {
         this.width=250;
         this.height=125;
 	    geometry=new THREE.PlaneGeometry(250,125,5,5);
-	    material =new THREE.MeshBasicMaterial({ color: 0xFFFFFF,wireframe: true});
+	    material =new THREE.MeshBasicMaterial({ color: 0x82CFA4,wireframe: false});
 
 	    mesh = new THREE.Mesh(geometry, material);
 	    mesh.rotation.x-=Math.PI /2;
@@ -59,121 +62,80 @@ class Wall extends Entity{
         super();
         this.len=comp;
        
-        geometry=new THREE.BoxGeometry(comp,Math.sqrt(180*180+90*90)/10,5);
-        material= new THREE.MeshBasicMaterial({color:0x00a000, wireframe:true});
+        geometry=new THREE.BoxGeometry(comp,Math.sqrt(250*250+125*125)/10,2);
+        material= new THREE.MeshBasicMaterial({color:0x00a000, wireframe:false});
 
         mesh=new THREE.Mesh(geometry,material);
         this.add(mesh);
-        console.log(y+((Math.sqrt(180*180+90*90)/10)/2))
-        this.position.set(x,y+(Math.sqrt(180*180+90*90)/10)/2,z);
+        
+        this.position.set(x,y+(Math.sqrt(250*250+125*125)/10)/2,z);
         this.rotation.y=rot;
+        mesh.rotation.z-=Math.PI ;
         scene.add(this);
     }
 
 }
 
 function create_walls(){
-    parede1=new Wall(0,0,-47.5,180,0);
-    parede2=new Wall(0,0,47.5,180,0);
-    parede3=new Wall(92.5,0,0,100,Math.PI/2);
-    parede4=new Wall(-92.5,0,0,100,Math.PI/2);
+    parede1=new Wall(0,0,-63.5,250,0);
+    parede2=new Wall(0,0,63.5,250,0);
+    parede3=new Wall(126,0,0,125,Math.PI/2);
+    parede4=new Wall(-126,0,0,125,Math.PI/2);
 
 }
 
-
-function createTable(x, y, z) {
-    'use strict';
-
-    table = new THREE.Object3D();
-
-    material = new THREE.MeshBasicMaterial({ color: 0x8B4513, wireframe: true });
-
-    addTableLeg(table, -25,18.5, -10);
-    addTableLeg(table, -25, 18.5, 10);
-    addTableLeg(table, 25, 18.5, 10);
-    addTableLeg(table, 25, 18.5, -10);
-
-    scene.add(table);
-
-    table.position.x = x;
-    table.position.y = y;
-    table.position.z = z;
+function diferent_pos(x,z,num){
+    var a=0;
+    if(num==0){
+        console.log('primera bola');
+        return true;
+    }
+    else{
+        for(i=0;i<num;i++){
+            var new_x=ball[i].pos_x-x;
+            var new_z=ball[i].pos_z-z;
+            var distancia=Math.sqrt((new_x*new_x)+(new_z*new_z))
+            if(distancia<Math.sqrt(250*250+125*125)/10){
+                a=1
+                                
+            }
+        
+        }
+        if(a==1)
+            return  false;
+        else
+            return true;
+    }
 }
 
-function createChair(x, y, z) {
-    'use strict';
-
-    chair = new THREE.Object3D();
-
-    material = new THREE.MeshBasicMaterial({ color: 0xF0E68C, wireframe: true });
-
-    addChairBody(chair, 0, 20, 0);
-    addChairBack(chair, 0, 45, 7.5);
-    addChairLeg(chair, -9, 6, -9);
-    addChairLeg(chair, -9, 6, 9);
-    addChairLeg(chair, 9, 6, 9);
-    addChairLeg(chair, 9, 6, -9);
-    addChairWheels(chair, -9, -5, -9);
-    addChairWheels(chair, -9, -5, 9);
-    addChairWheels(chair, 9, -5, 9);
-    addChairWheels(chair, 9, -5, -9);
-
-    scene.add(chair);
-
-    chair.position.x = x;
-    chair.position.y = y;
-    chair.position.z = z;
-
-   	chair.speedX = 0;
-    chair.speedZ = 0;    
-    chair.accelarate = 0.005;
-    chair.desaccelarate=0.005;
-
+function create_balls(){
+    var raio=Math.sqrt((250*250)+(125*125))/20;
+    var num=0;
     
-    chair.right=false;
-    chair.left=false;
-    chair.front=false;
-    chair.back=false;    
- 
-
-}
-
-function newPosRight(tipo) {
-	side(39);
-
+    var vertical_max=(250-raio);
     
-    teta-=0.5;
-    chair.rotation.y-= 0.5*Math.PI/180;
-    //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
+    var horizontal_max=(125-raio);
+    while(num<10){
+        console.log('estou no ciclo')
+        var random_x=(Math.random()*vertical_max+0).toFixed(3)-125;
+        if(random_x<0)
+            random_x+=raio;
 
+        console.log(random_x);
+        var random_z=(Math.random()*horizontal_max+0).toFixed(3)-62.5;
+        if(random_z<0)
+            random_z+=raio;
+        if(diferent_pos(random_x,random_z,num)){
+            ball.push(new Ball(random_x,0,random_z))
+            num+=1;
+        }
+    }
 }
-function newPosLeft(tipo) {
-	side(37);
-    //console.log(teta)
-    teta+=0.5;
-    chair.rotation.y+= 0.5*Math.PI/180;
-    //console.log(Math.cos(teta*Math.PI/180),"com teta igual a",teta);
-}
-function newPosUp(tipo) {
-	side(38);
-	if(tipo==1)
-    	accelarateSpeed += chair.accelarate;
 
-    if(accelarateSpeed>=maxspeed)
-    	accelarateSpeed=maxspeed;
 
-    chair.position.z -= accelarateSpeed*Math.cos(teta*Math.PI/180);
-    chair.position.x -= accelarateSpeed*Math.sin(teta*Math.PI/180);
-}
-function newPosDown(tipo) {
-	side(40);
-	if(tipo==1)
-    	accelarateSpeed += chair.accelarate;
-    if(accelarateSpeed>=maxspeed)
-    	accelarateSpeed=maxspeed;
-    chair.position.z += accelarateSpeed*Math.cos(teta*Math.PI/180);
-    chair.position.x += accelarateSpeed*Math.sin(teta*Math.PI/180);
-}
+
+
+
 
 
 
@@ -187,7 +149,8 @@ function createScene() {
    
     //createTable(0, 8, -30);
     new Floor(0,0,0);
-    create_walls()
+    create_walls();
+    create_balls();
     
 
 }
@@ -230,7 +193,7 @@ function onResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     if (window.innerHeight > 0 && window.innerWidth > 0) {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = 1;
         camera.updateProjectionMatrix();
     }
     camera.lookAt(scene.position);
@@ -274,16 +237,7 @@ function onKeyDown(e) {
     
             render();
             break;
-    case 65: //A
-    case 97: //a
 
-        scene.traverse(function (node) {
-
-            if (node instanceof THREE.Mesh) {
-            	
-                node.material.wireframe = !node.material.wireframe;
-            }
-        });
         break;
     case 69:  //E
     case 101: //e
