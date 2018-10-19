@@ -15,6 +15,8 @@ var accelarateSpeedX = 0;
 var accelarateSpeedY = 0;
 var accelarateSpeed = 0;
 var teta = 0;
+var clock = new THREE.Clock(true);
+var delta=0;
 
 function addTableLeg(obj, x, y, z) {
     'use strict';
@@ -164,6 +166,7 @@ function createChair(x, y, z) {
     'use strict';
     flagChair = 0;
     chair = new THREE.Object3D();
+    
 
     material = new THREE.MeshBasicMaterial({ color: 0xF0E68C, wireframe: true });
 
@@ -186,7 +189,7 @@ function createChair(x, y, z) {
 
    	chair.speedX = 0;
     chair.speedZ = 0;
-    chair.accelarate = 0.005;
+    chair.accelarate = 0.5;
     chair.desaccelarate=0.005;
 
     chair.right=false;
@@ -237,8 +240,9 @@ function newPosLeft(tipo) {
 
 function newPosUp(tipo) {
 	side(38);
+  delta=clock.getDelta();
 	if(tipo==1)
-    accelarateSpeed += chair.accelarate;
+    accelarateSpeed += chair.accelarate*delta;
 
   if(accelarateSpeed>=maxspeed)
   	accelarateSpeed=maxspeed;
@@ -251,8 +255,9 @@ function newPosUp(tipo) {
 
 function newPosDown(tipo) {
 	side(40);
-	if(tipo==1)
-    	accelarateSpeed += chair.accelarate;
+  delta=clock.getDelta();
+  if(tipo==1)
+    accelarateSpeed += chair.accelarate*delta;
 
   if(accelarateSpeed>=maxspeed)
   	accelarateSpeed=maxspeed;
@@ -322,12 +327,15 @@ function onKeyUp(){
 	for (var i = 37; i <= 40; i++) {
 		map[i]=false;
 	}
+  clock.stop();
+
 }
 
 function onKeyDown(e) {
     'use strict';
 
     map[e.keyCode]=true;
+    clock.start();
 
     switch (e.keyCode) {
       case 49: //1
@@ -479,7 +487,8 @@ function checkKey() {
     if(map[39]&&map[38]){
     	side(39);
     	chair.front=true;
-    	accelarateSpeed += chair.accelarate;
+      delta=clock.getDelta();
+    	accelarateSpeed += chair.accelarate*delta;
 	    if(accelarateSpeed>=maxspeed )
     			accelarateSpeed=maxspeed;
   		teta-=0.5;
@@ -490,7 +499,8 @@ function checkKey() {
   	if(map[39]&&map[40]){
   		side(39);
   		chair.back=true;
-  		accelarateSpeed += chair.accelarate;
+      delta=clock.getDelta();
+      accelarateSpeed += chair.accelarate*delta;
 	    if(accelarateSpeed>=maxspeed )
   			accelarateSpeed=maxspeed;
   		teta-=0.5;
@@ -501,7 +511,8 @@ function checkKey() {
   	if(map[37]&&map[38]){
   		side(37);
   		chair.front=true;
-  		accelarateSpeed += chair.accelarate;
+      delta=clock.getDelta();
+      accelarateSpeed += chair.accelarate*delta;
   	  if(accelarateSpeed>=maxspeed )
   			accelarateSpeed=maxspeed;
   		teta+=0.5;
@@ -512,7 +523,8 @@ function checkKey() {
   	if(map[37]&&map[40]){
   		side(37);
   		chair.back=true;
-  		accelarateSpeed += chair.accelarate;
+      delta=clock.getDelta();
+      accelarateSpeed += chair.accelarate*delta;
   	  if(accelarateSpeed>=maxspeed )
   			accelarateSpeed=maxspeed;
   		teta+=0.5;
