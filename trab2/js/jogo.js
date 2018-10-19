@@ -39,9 +39,9 @@ class Entity extends THREE.Object3D{
 class Floor extends Entity {
     constructor(x,y,z){
         super();
-        this.width=180;
-        this.height=90;
-	    geometry=new THREE.PlaneGeometry(180,90,5,5);
+        this.width=250;
+        this.height=125;
+	    geometry=new THREE.PlaneGeometry(250,125,5,5);
 	    material =new THREE.MeshBasicMaterial({ color: 0xFFFFFF,wireframe: true});
 
 	    mesh = new THREE.Mesh(geometry, material);
@@ -55,22 +55,28 @@ class Floor extends Entity {
 
 
 class Wall extends Entity{
-    constructor(x,y,z,comp){
+    constructor(x,y,z,comp,rot){
         super();
         this.len=comp;
-        geometry=new THREE.BoxGeometry(comp,Math.sqrt((Floor.width*Floor.width)+(Floor.height*Floor.height)),5);
+       
+        geometry=new THREE.BoxGeometry(comp,Math.sqrt(180*180+90*90)/10,5);
         material= new THREE.MeshBasicMaterial({color:0x00a000, wireframe:true});
 
         mesh=new THREE.Mesh(geometry,material);
         this.add(mesh);
-        this.position.set(x,y,z);
+        console.log(y+((Math.sqrt(180*180+90*90)/10)/2))
+        this.position.set(x,y+(Math.sqrt(180*180+90*90)/10)/2,z);
+        this.rotation.y=rot;
         scene.add(this);
     }
 
 }
 
 function create_walls(){
-    new Wall(0,0,0,180);
+    parede1=new Wall(0,0,-47.5,180,0);
+    parede2=new Wall(0,0,47.5,180,0);
+    parede3=new Wall(92.5,0,0,100,Math.PI/2);
+    parede4=new Wall(-92.5,0,0,100,Math.PI/2);
 
 }
 
@@ -207,8 +213,8 @@ function createCamera() {
     'use strict';
     camera1 = new THREE.OrthographicCamera(-150, 150, 150, -150, 150, 10000);
     camera1.position.y = 400;
-    camera2 = new THREE.OrthographicCamera(-100, 100, 100, -100, 40, 10000);
-    camera2.position.z = -200;
+    camera2 = new THREE.OrthographicCamera(-150, 150, 150, -150, 150, 10000);
+    camera2.position.z = -400;
     camera3 = new THREE.OrthographicCamera(-100, 100, 100, -100, 40, 10000);
     camera3.position.x = 200;
 
@@ -256,7 +262,7 @@ function onKeyDown(e) {
     case 50://2
             
             camera=camera2;
-            
+            onResize()
             render();
             break;
     case 51://3
