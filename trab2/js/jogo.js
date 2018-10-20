@@ -29,9 +29,11 @@ class Ball extends Entity{
         this.pos_z=z;
         geometry=new THREE.SphereGeometry(Math.sqrt(250*250+125*125)/20,32,32);
         material=new THREE.MeshBasicMaterial({color:0xDABB01,wireframe:false});
+        var helper=new THREE.AxisHelper(20); 
 
         mesh=new THREE.Mesh(geometry,material);
         this.add(mesh);
+        this.add(helper);
         this.position.set(x,y+(Math.sqrt(250*250+125*125)/20),z);
 
         scene.add(this);
