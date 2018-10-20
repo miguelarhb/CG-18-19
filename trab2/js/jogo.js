@@ -176,11 +176,16 @@ function createCamera() {
     'use strict';
     camera1 = new THREE.OrthographicCamera(-150, 150, 150, -150, 150, 10000);
     camera1.position.y = 400;
-    camera2 = new THREE.OrthographicCamera(-150, 150, 150, -150, 150, 10000);
-    camera2.position.z = -400;
-    camera3 = new THREE.OrthographicCamera(-100, 100, 100, -100, 40, 10000);
-    camera3.position.x = 200;
-
+    camera2 = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,150, 10000);
+    console.log("OLA AMIGOS! TUDO BEM?")
+    camera2.position.z = -200;
+    camera2.position.x = 300;
+    camera2.position.y = 200;
+    camera3 = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,150, 10000);
+    console.log("OLA AMIGOS! TUDO BEM?")
+    camera3.position.z = 0;
+    camera3.position.x = 300;
+    camera3.position.y = 300;
    // camera.lookAt(scene.position);
 }
 
@@ -210,8 +215,6 @@ function render() {
 
 function onKeyDown(e) {
     'use strict';
- 
-    map[e.keyCode]=true;
     
     switch (e.keyCode) {
     	
@@ -232,7 +235,7 @@ function onKeyDown(e) {
     		
 
             camera=camera3;
-           
+            onResize()
     		
     
             render();
