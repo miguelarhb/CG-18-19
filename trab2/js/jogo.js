@@ -1,9 +1,9 @@
 /*global THREE, requestAnimationFrame, console*/
 
 var camera, scene, renderer;
-var camera1, camera2,camera3
+var camera1, camera2,camera3,camera4;
 var geometry, material, mesh;
-
+var clock = new THREE.Clock(true);
 var floor,parede1,parede2,parede3,parede4,num;
 var ball=new Array();
 
@@ -25,10 +25,13 @@ class Entity extends THREE.Object3D{
 class Ball extends Entity{
     constructor(x,y,z){
         super();
+        this.speed = 20;
+        this.maxspeed = 1000;
         this.pos_x=x;
         this.pos_z=z;
+        console.log(this.pos_x, this.pos_z)
         geometry=new THREE.SphereGeometry(Math.sqrt(250*250+125*125)/20,32,32);
-        material=new THREE.MeshBasicMaterial({color:0xDABB01,wireframe:false});
+        material=new THREE.MeshBasicMaterial({color:0xff4000,wireframe:false});
         var helper=new THREE.AxisHelper(20); 
 
         mesh=new THREE.Mesh(geometry,material);
@@ -38,6 +41,19 @@ class Ball extends Entity{
 
         scene.add(this);
     }
+
+    velocidade() {
+        console.log("READY FOR MOVEMENT");
+        var delta=clock.getDelta();
+        if(this.speed>=this.maxspeed)
+            this.speed=this.maxspeed;
+        this.position.z += this.speed*Math.cos(delta*Math.PI/180);
+        this.position.x += this.speed*Math.sin(delta*Math.PI/180);
+        this.pos_z += this.speed*Math.cos(delta*Math.PI/180);
+        this.pos_x += this.speed*Math.sin(delta*Math.PI/180);        
+        console.log(this.pos_x, this.pos_z)
+
+}
 }
 
 
@@ -46,15 +62,15 @@ class Floor extends Entity {
         super();
         this.width=250;
         this.height=125;
-	    geometry=new THREE.PlaneGeometry(250,125,5,5);
-	    material =new THREE.MeshBasicMaterial({ color: 0x82CFA4,wireframe: false});
+        geometry=new THREE.PlaneGeometry(250,125,5,5);
+        material =new THREE.MeshBasicMaterial({ color: 0x6666ff,wireframe: false});
 
-	    mesh = new THREE.Mesh(geometry, material);
-	    mesh.rotation.x-=Math.PI /2;
-	    this.add(mesh);
-	    this.position.set(x,y,z);
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x-=Math.PI /2;
+        this.add(mesh);
+        this.position.set(x,y,z);
 
-	    scene.add(this);
+        scene.add(this);
     }
 }
 
@@ -65,7 +81,7 @@ class Wall extends Entity{
         this.len=comp;
        
         geometry=new THREE.BoxGeometry(comp,Math.sqrt(250*250+125*125)/10,2);
-        material= new THREE.MeshBasicMaterial({color:0x00a000, wireframe:false});
+        material= new THREE.MeshBasicMaterial({color:0xc2c2d6, wireframe:false});
 
         mesh=new THREE.Mesh(geometry,material);
         this.add(mesh);
@@ -117,7 +133,7 @@ function create_balls(){
     var vertical_max=(250-raio);
     
     var horizontal_max=(125-raio);
-    while(num<10){
+    while(num<1){
         console.log('estou no ciclo')
         var random_x=(Math.random()*vertical_max+0).toFixed(3)-125;
         if(random_x<0)
@@ -135,9 +151,15 @@ function create_balls(){
 }
 
 
-
-
-
+function move_speed_by_time(){
+    time_passed = clock.getElapsedTime();
+    if(time_passed%0.015 == 0){
+        for (var i = 0; i < ball.length; i++) {
+            console.log("DEVIA ESTAR A ANDAR")
+            ball[i].velocidade();
+        }
+    }
+}
 
 
 
@@ -153,24 +175,25 @@ function createScene() {
     new Floor(0,0,0);
     create_walls();
     create_balls();
+    console.log("entao mas")
     
 
 }
 function clearScene(){
-	scene.remove(chair);
-	scene.remove(lamp);
-	scene.remove(table);
-	scene.remove(floor);
+    scene.remove(chair);
+    scene.remove(lamp);
+    scene.remove(table);
+    scene.remove(floor);
 }
 
 function update(){
-	createScene();
-	createChair(chair.position.x,chair.position.y,chair.position.z);
+    createScene();
+    createChair(chair.position.x,chair.position.y,chair.position.z);
 }
 function createGame(){
-	
-	 createScene();
-	 
+    
+     createScene();
+     
 }
 
 
@@ -179,7 +202,7 @@ function createCamera() {
     camera1 = new THREE.OrthographicCamera(-150, 150, 150, -150, 150, 10000);
     camera1.position.y = 400;
     camera2 = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,150, 10000);
-    console.log("OLA AMIGOS! TUDO BEM?")
+    console.log("OLA AMIGO! TUDO BEM?")
     camera2.position.z = -200;
     camera2.position.x = 300;
     camera2.position.y = 200;
@@ -188,6 +211,10 @@ function createCamera() {
     camera3.position.z = 0;
     camera3.position.x = 300;
     camera3.position.y = 300;
+    camera4=new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera4.position.z=25;
+    camera4.position.x=25;
+    camera4.position.y=80;
    // camera.lookAt(scene.position);
 }
 
@@ -211,7 +238,7 @@ function render() {
     renderer.render(scene, camera);
 }
 
-	
+    
 
 
 
@@ -219,7 +246,7 @@ function onKeyDown(e) {
     'use strict';
     
     switch (e.keyCode) {
-    	
+        
 
     case 49: //1
   
@@ -234,16 +261,19 @@ function onKeyDown(e) {
             render();
             break;
     case 51://3
-    		
+            
 
             camera=camera3;
             onResize()
-    		
+            
     
             render();
             break;
 
         break;
+    case 52:
+            camera=camera4;
+            camera.lookAt(ball[0].position)
     case 69:  //E
     case 101: //e
  
@@ -275,13 +305,12 @@ function init() {
     render();
 
     window.addEventListener("keydown", onKeyDown);
-   
+    window.setInterval(function(){move_speed_by_time()},15);
     window.addEventListener("resize", onResize);
 }
 
 function animate() {
     'use strict';
-    
     render();
    // update();
     requestAnimationFrame(animate);
