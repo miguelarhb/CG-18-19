@@ -6,27 +6,20 @@ var geometry, material, mesh;
 var clock = new THREE.Clock(true);
 var floor,parede1,parede2,parede3,parede4,num;
 var ball=new Array();
-<<<<<<< HEAD
+
 var accel_max=2;
 
 
-
-
-
-=======
->>>>>>> f85d9212e7f90cfcfb124e18a0b9e24db33729a6
 
 class Entity extends THREE.Object3D{
     constructor(x,y,z){
         super();
         this.position.set(x,y,z)
-<<<<<<< HEAD
+
 
         
-    }    
-=======
-    }
->>>>>>> f85d9212e7f90cfcfb124e18a0b9e24db33729a6
+    }   
+
 }
 
 class Ball extends Entity{
@@ -36,7 +29,7 @@ class Ball extends Entity{
         this.maxspeed = 1000;
         this.pos_x=x;
         this.pos_z=z;
-<<<<<<< HEAD
+
         this.acceler=(Math.random()*(accel_max)+0).toFixed(3);
         this.teta=(Math.random()*(360)+0).toFixed(3);
         this.velocity=v;
@@ -44,17 +37,17 @@ class Ball extends Entity{
         geometry=new THREE.SphereGeometry(Math.sqrt(250*250+125*125)/20,32,32);
         material=new THREE.MeshBasicMaterial({color:0xff4000,wireframe:false});
         var helper=new THREE.AxisHelper(20); 
-=======
-        console.log(this.pos_x, this.pos_z)
+
+
         geometry=new THREE.SphereGeometry(Math.sqrt(250*250+125*125)/20,32,32);
         material=new THREE.MeshBasicMaterial({color:0xff4000,wireframe:false});
         var helper=new THREE.AxisHelper(20);
->>>>>>> f85d9212e7f90cfcfb124e18a0b9e24db33729a6
+
 
         mesh=new THREE.Mesh(geometry,material);
         this.add(mesh);
         this.add(helper);
-<<<<<<< HEAD
+
         this.position.set(this.pos_x,y+(Math.sqrt(250*250+125*125)/20),this.pos_z);
 
         scene.add(this);
@@ -84,25 +77,8 @@ class Ball extends Entity{
         return this.acceler;
     }
 }
-=======
-        this.position.set(x,y+(Math.sqrt(250*250+125*125)/20),z);
+    
 
-        scene.add(this);
-    }
->>>>>>> f85d9212e7f90cfcfb124e18a0b9e24db33729a6
-
-    velocidade() {
-        console.log("READY FOR MOVEMENT");
-        var delta=clock.getDelta();
-        if(this.speed>=this.maxspeed)
-            this.speed=this.maxspeed;
-        this.position.z += this.speed*Math.cos(delta*Math.PI/180);
-        this.position.x += this.speed*Math.sin(delta*Math.PI/180);
-        this.pos_z += this.speed*Math.cos(delta*Math.PI/180);
-        this.pos_x += this.speed*Math.sin(delta*Math.PI/180);
-        console.log(this.pos_x, this.pos_z)
-    }
-}
 
 class Floor extends Entity {
     constructor(x,y,z){
