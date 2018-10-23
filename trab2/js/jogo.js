@@ -8,7 +8,7 @@ var wHeight = window.innerHeight;
 var originalAspect = wWidth / wHeight;
 var floor,parede1,parede2,parede3,parede4,num;
 var ball=new Array();
-var accel_max=1;
+var accel_max=2;
 var ball_num=3;
 
 
@@ -24,12 +24,15 @@ class Ball extends Entity{
         super();
         this.pos_x=x;
         this.pos_z=z;
-        this.radius=Math.sqrt(250*250+125*125)/20;
-        this.acceler=(Math.random()*(accel_max)+0).toFixed(3);
-        this.teta=(Math.random()*(359)+0);
+        this.radius=Math.sqrt(250*250+125*125)/20; 
+        this.acceler_x= (Math.random()*5).toFixed(3)-2;
+       
+        this.acceler_z= (Math.random()*5).toFixed(3)-2;
+       
+
         //this.teta=310;
         this.velocity=0;
-        console.log(this.teta);
+        console.log(this.acceler_x, this.acceler_z);
         geometry=new THREE.SphereGeometry(Math.sqrt(250*250+125*125)/20,32,32);
         material=new THREE.MeshBasicMaterial({color:0xff4000,wireframe:false});
         var helper=new THREE.AxisHelper(20);
@@ -45,15 +48,26 @@ class Ball extends Entity{
         this.pos_z=z;
         this.pos_x=x;
     }
+    change_teta(beta){
+        this.teta+=beta;
+    }
+    change_accel_x(){
+      
+        console.log('antes ',this.acceler_x);
+        this.acceler_x=-this.acceler_x;
+         console.log('depois ',this.acceler_x);
+    }
+    change_accel_z(){
+        
+        this.acceler_z=-this.acceler_z;
+    }    
     change_position(){
         this.position.set(this.pos_x,(Math.sqrt(250*250+125*125)/20),this.pos_z);
     }
     change_velocity(a){
         this.velocity=a;
     }
-    get_teta(){
-        return this.teta;
-    }
+
     get_radius(){
         return this.radius;
     }
@@ -66,10 +80,15 @@ class Ball extends Entity{
     get_velocity(){
         return this.velocity;
     }
-    get_acceler(){
-        return this.acceler;
+    get_acceler_x(){
+        
+        return this.acceler_x;
     }
-    update_ball(){
+    get_acceler_z(){
+        
+        return this.acceler_z;
+    }
+    /*update_ball(){
         var j=0;
         for(j=0;j<ball_num;i++){
             if(this!=ball[i]){
@@ -78,7 +97,7 @@ class Ball extends Entity{
                 }
             }
         }
-    }
+    }*/
 }
 
 class Floor extends Entity {
@@ -102,7 +121,8 @@ class Wall extends Entity{
     constructor(x,y,z,comp,rot){
         super();
         this.len=comp;
-
+        this.z=z;
+        this.x=x;
         geometry=new THREE.BoxGeometry(comp,Math.sqrt(250*250+125*125)/10,2);
         material= new THREE.MeshBasicMaterial({color:0xc2c2d6, wireframe:false});
 
@@ -123,23 +143,38 @@ function create_walls(){
     parede4=new Wall(-126,0,0,125,Math.PI/2);
 }
 
-function collision(x,z){
-    var a =0;
-    var b=0;
-    var j=0;
+function collision(x,z,k){
+
+
     for(j=0;j<ball_num;j++){
         var new_x=ball[j].pos_x -x;
         var new_z=ball[j].pos_z -z;
         var distancia=Math.sqrt((new_x*new_x)+(new_z*new_z))
-        //console.log('estou a ', distancia);
+        var a =0;
+        var b=0;
+        
         if(distancia<Math.sqrt(250*250+125*125)/10){
             //.log('sou outra bola')
             a+=1;
         }
-        if((ball[j].get_pos_x()+ball[j].get_radius()-250<=0) || (ball[j].get_pos_x()-ball[j].get_radius()+250>=0) ){
 
-        }
+    }
+    var prox_x=0;
+    var prox_z=0;
+    prox_x=ball[k].get_pos_x();
+    prox_z=ball[k].get_pos_z()
+    if(prox_x<0)
+        prox_x=-prox_x;
+    if(prox_z<0)
+        prox_z=-prox_z;
+    console.log('estou na bola ',j);
+    if((prox_x+ball[k].get_radius()-125>0) ){
+        console.log('bati parede de lado com ', k);
+        ball[k].change_accel_x();
+    }
+    if(prox_z+ball[k].get_radius()-62.5>0){
 
+        ball[k].change_accel_z();
     }
     if(a>1){
         return  true;
@@ -159,7 +194,7 @@ function diferent_pos(x,z,num){
             var new_z=ball[i].pos_z-z;
             var distancia=Math.sqrt((new_x*new_x)+(new_z*new_z))
             if(distancia<Math.sqrt(250*250+125*125)/10)
-                a=1
+                a=1;
         }
         if(a==1)
             return  false;
@@ -169,20 +204,25 @@ function diferent_pos(x,z,num){
 }
 
 function move_balls(){
-    var i=0
+
     for(i=0;i<ball_num;i++){
+        //console.log(i)
         //console.log('velocidade antes memso antes ',ball[i].get_velocity());
         //ball[i].change_velocity(ball[i].get_acceler());
         //console.log('antes ',ball[i].get_pos_x() ,'   ',ball[i].get_acceler()*Math.cos(ball[i].get_teta()*Math.PI/180));
         //console.log('velocidade antes ',ball[i].get_velocity());
         //console.log('teta ',ball[i].get_teta())
-        var position_z= ball[i].get_pos_z() +ball[i].get_acceler()*Math.cos(ball[i].get_teta()*Math.PI/180);
-        var position_x= ball[i].get_pos_x() + ball[i].get_acceler()*Math.sin(ball[i].get_teta()*Math.PI/180);
-        ball[i].put_x_z(position_x,position_z);
-        if(collision(position_x, position_z )){
-            console.log('bati poi');
+
+        //ball[i].put_x_z(position_x,position_z);
+        console.log('antes da colisoa', ball[i].get_acceler_x());
+        if(collision(ball[i].get_pos_x(), ball[i].get_pos_z(),i )){
+            //console.log('bati poi');
         }
+        console.log('depoiis da colisoa', ball[i].get_acceler_x());
         //console.log('antes');
+        var position_z= ball[i].get_pos_z() +parseFloat(ball[i].get_acceler_z());
+        var position_x= ball[i].get_pos_x() + parseFloat(ball[i].get_acceler_x());
+        ball[i].put_x_z(position_x,position_z);
         ball[i].change_position();
         //ball[i].change_position(position_x,position_z);
 
@@ -206,9 +246,10 @@ function create_balls(){
             random_z+=raio;
         if(diferent_pos(random_x,random_z,num)){
             ball.push(new Ball(random_x,0,random_z,0))
-            num+=1;
+            num++;
         }
     }
+    console.log(ball);
 }
 
 function createScene() {
