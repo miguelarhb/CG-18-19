@@ -1,12 +1,12 @@
 /*global THREE, requestAnimationFrame, console*/
 
 var camera, scene, renderer;
-var camera1, camera2,camera3
+var camera1, camera2,camera3,camera4;
 var geometry, material, mesh;
 
 var floor,parede1,parede2,parede3,parede4,num;
 var ball=new Array();
-
+var accel_max=2;
 
 
 
@@ -17,24 +17,55 @@ class Entity extends THREE.Object3D{
     constructor(x,y,z){
         super();
         this.position.set(x,y,z)
+
         
     }    
 }
 
 
 class Ball extends Entity{
-    constructor(x,y,z){
+    constructor(x,y,z,v){
         super();
         this.pos_x=x;
         this.pos_z=z;
+        this.acceler=(Math.random()*(accel_max)+0).toFixed(3);
+        this.teta=(Math.random()*(360)+0).toFixed(3);
+        this.velocity=v;
+        console.log(this.teta);
         geometry=new THREE.SphereGeometry(Math.sqrt(250*250+125*125)/20,32,32);
-        material=new THREE.MeshBasicMaterial({color:0xDABB01,wireframe:false});
+        material=new THREE.MeshBasicMaterial({color:0xff4000,wireframe:false});
+        var helper=new THREE.AxisHelper(20); 
 
         mesh=new THREE.Mesh(geometry,material);
         this.add(mesh);
-        this.position.set(x,y+(Math.sqrt(250*250+125*125)/20),z);
+        this.add(helper);
+        this.position.set(this.pos_x,y+(Math.sqrt(250*250+125*125)/20),this.pos_z);
 
         scene.add(this);
+    }
+    change_position(x,z){
+        this.pos_x=x;
+        this.pos_z=z;
+        this.position.set(this.pos_x,(Math.sqrt(250*250+125*125)/20),this.pos_z);
+    }
+    change_velocity(a){
+        this.velocity=a;
+        
+    }
+    get_teta(){
+        return this.teta;
+    }
+    get_pos_x(){
+        return this.pos_x;
+    }
+    get_pos_z(){
+        return this.pos_z;
+    }
+    get_velocity(){
+        return this.velocity;
+    }
+    get_acceler(){
+        return this.acceler;
     }
 }
 
@@ -44,15 +75,15 @@ class Floor extends Entity {
         super();
         this.width=250;
         this.height=125;
-	    geometry=new THREE.PlaneGeometry(250,125,5,5);
-	    material =new THREE.MeshBasicMaterial({ color: 0x82CFA4,wireframe: false});
+        geometry=new THREE.PlaneGeometry(250,125,5,5);
+        material =new THREE.MeshBasicMaterial({ color: 0x6666ff,wireframe: false});
 
-	    mesh = new THREE.Mesh(geometry, material);
-	    mesh.rotation.x-=Math.PI /2;
-	    this.add(mesh);
-	    this.position.set(x,y,z);
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x-=Math.PI /2;
+        this.add(mesh);
+        this.position.set(x,y,z);
 
-	    scene.add(this);
+        scene.add(this);
     }
 }
 
@@ -63,7 +94,7 @@ class Wall extends Entity{
         this.len=comp;
        
         geometry=new THREE.BoxGeometry(comp,Math.sqrt(250*250+125*125)/10,2);
-        material= new THREE.MeshBasicMaterial({color:0x00a000, wireframe:false});
+        material= new THREE.MeshBasicMaterial({color:0xc2c2d6, wireframe:false});
 
         mesh=new THREE.Mesh(geometry,material);
         this.add(mesh);
@@ -87,7 +118,6 @@ function create_walls(){
 function diferent_pos(x,z,num){
     var a=0;
     if(num==0){
-        console.log('primera bola');
         return true;
     }
     else{
@@ -107,7 +137,28 @@ function diferent_pos(x,z,num){
             return true;
     }
 }
+function move_balls(){
 
+    for(i=0;i<10;i++){
+        //console.log('velocidade antes memso antes ',ball[i].get_velocity());
+
+        ball[i].change_velocity(ball[i].get_acceler());
+        
+        //console.log('antes ',ball[i].get_pos_x() ,'   ',ball[i].get_acceler()*Math.cos(teta*Math.PI/180));
+        //console.log('velocidade antes ',ball[i].get_velocity());
+        var position_z= ball[i].get_pos_z() + parseFloat(ball[i].get_velocity()) +ball[i].get_acceler()*Math.cos(ball[i].get_teta()*Math.PI/180);
+
+        var position_x= ball[i].get_pos_x()+parseFloat(ball[i].get_velocity()) + ball[i].get_acceler()*Math.sin(ball[i].get_teta()*Math.PI/180);
+
+        ball[i].change_position(position_x,position_z);
+
+        //console.log('depois',ball[i].get_pos_x());
+        //console.log('psoiçao x ',position_x ,'posicao z ',position_z);
+
+        
+    }
+
+}
 function create_balls(){
     var raio=Math.sqrt((250*250)+(125*125))/20;
     var num=0;
@@ -116,17 +167,16 @@ function create_balls(){
     
     var horizontal_max=(125-raio);
     while(num<10){
-        console.log('estou no ciclo')
         var random_x=(Math.random()*vertical_max+0).toFixed(3)-125;
         if(random_x<0)
             random_x+=raio;
 
-        console.log(random_x);
+
         var random_z=(Math.random()*horizontal_max+0).toFixed(3)-62.5;
         if(random_z<0)
             random_z+=raio;
         if(diferent_pos(random_x,random_z,num)){
-            ball.push(new Ball(random_x,0,random_z))
+            ball.push(new Ball(random_x,0,random_z,0))
             num+=1;
         }
     }
@@ -155,20 +205,17 @@ function createScene() {
 
 }
 function clearScene(){
-	scene.remove(chair);
-	scene.remove(lamp);
-	scene.remove(table);
-	scene.remove(floor);
+    scene.remove(chair);
+    scene.remove(lamp);
+    scene.remove(table);
+    scene.remove(floor);
 }
 
-function update(){
-	createScene();
-	createChair(chair.position.x,chair.position.y,chair.position.z);
-}
+
 function createGame(){
-	
-	 createScene();
-	 
+    
+     createScene();
+     
 }
 
 
@@ -177,15 +224,19 @@ function createCamera() {
     camera1 = new THREE.OrthographicCamera(-150, 150, 150, -150, 150, 10000);
     camera1.position.y = 400;
     camera2 = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,150, 10000);
-    console.log("OLA AMIGOS! TUDO BEM?")
+
     camera2.position.z = -200;
     camera2.position.x = 300;
     camera2.position.y = 200;
     camera3 = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,150, 10000);
-    console.log("OLA AMIGOS! TUDO BEM?")
+
     camera3.position.z = 0;
     camera3.position.x = 300;
     camera3.position.y = 300;
+    camera4=new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera4.position.z=25;
+    camera4.position.x=25;
+    camera4.position.y=80;
    // camera.lookAt(scene.position);
 }
 
@@ -209,7 +260,7 @@ function render() {
     renderer.render(scene, camera);
 }
 
-	
+    
 
 
 
@@ -217,7 +268,7 @@ function onKeyDown(e) {
     'use strict';
     
     switch (e.keyCode) {
-    	
+        
 
     case 49: //1
   
@@ -232,16 +283,19 @@ function onKeyDown(e) {
             render();
             break;
     case 51://3
-    		
+            
 
             camera=camera3;
             onResize()
-    		
+            
     
             render();
             break;
 
         break;
+    case 52:
+            camera=camera4;
+            camera.lookAt(ball[0].position)
     case 69:  //E
     case 101: //e
  
@@ -271,7 +325,7 @@ function init() {
     camera=camera1;
     camera.lookAt(scene.position);
     render();
-
+    //setInterval(move_balls(),3000);
     window.addEventListener("keydown", onKeyDown);
    
     window.addEventListener("resize", onResize);
@@ -281,6 +335,7 @@ function animate() {
     'use strict';
     
     render();
+    setInterval(move_balls(),3000);
    // update();
     requestAnimationFrame(animate);
 }
