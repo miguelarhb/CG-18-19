@@ -333,7 +333,6 @@ function createScene() {
     'use strict';
     scene = new THREE.Scene();
     scene.add(new THREE.AxisHelper(10));
-    //createTable(0, 8, -30);
     new Floor(0,0,0);
     create_walls();
     create_balls();
