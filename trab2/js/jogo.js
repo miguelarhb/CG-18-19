@@ -8,7 +8,7 @@ var wHeight = window.innerHeight;
 var originalAspect = wWidth / wHeight;
 var floor,parede1,parede2,parede3,parede4,num;
 var ball=new Array();
-var accel_max=2;
+var accel_max=1.5;
 var ball_num=3;
 
 
@@ -20,19 +20,21 @@ class Entity extends THREE.Object3D{
 }
 
 class Ball extends Entity{
-    constructor(x,y,z,v){
+    constructor(x,y,z,v,num){
         super();
         this.pos_x=x;
         this.pos_z=z;
-        this.radius=Math.sqrt(250*250+125*125)/20; 
-        this.acceler_x= (Math.random()*5).toFixed(3)-2;
-       
-        this.acceler_z= (Math.random()*5).toFixed(3)-2;
-       
+        this.radius=Math.sqrt(250*250+125*125)/20;
+        this.num=num;
+        this.acceler={ 
+            x: (Math.random()*(accel_max*2+1)).toFixed(3)-accel_max,
+            z: (Math.random()*(accel_max*2+1)).toFixed(3)-accel_max
+        };
+        this.mass=1;
 
         //this.teta=310;
         this.velocity=0;
-        console.log(this.acceler_x, this.acceler_z);
+        console.log(this.acceler.x, this.acceler.z);
         geometry=new THREE.SphereGeometry(Math.sqrt(250*250+125*125)/20,32,32);
         material=new THREE.MeshBasicMaterial({color:0xff4000,wireframe:false});
         var helper=new THREE.AxisHelper(20);
@@ -52,24 +54,35 @@ class Ball extends Entity{
         this.teta+=beta;
     }
     change_accel_x(){
-      
-        console.log('antes ',this.acceler_x);
-        this.acceler_x=-this.acceler_x;
-         console.log('depois ',this.acceler_x);
+        this.acceler.x=-this.acceler.x;
+         
     }
+    change_accel_x_to(a){
+        this.acceler.x=a;
+    }  
     change_accel_z(){
         
-        this.acceler_z=-this.acceler_z;
+        this.acceler.z=-this.acceler.z;
+    }
+    change_accel_z_to(a){
+        this.acceler.z=a;
     }    
     change_position(){
+
         this.position.set(this.pos_x,(Math.sqrt(250*250+125*125)/20),this.pos_z);
     }
     change_velocity(a){
         this.velocity=a;
     }
+    get_mass(){
+        return this.mass;
+    }
 
     get_radius(){
         return this.radius;
+    }
+    get_num(){
+        return this.num;
     }
     get_pos_x(){
         return this.pos_x;
@@ -77,27 +90,17 @@ class Ball extends Entity{
     get_pos_z(){
         return this.pos_z;
     }
-    get_velocity(){
-        return this.velocity;
+    get_acceler(){
+        return this.acceler;
     }
     get_acceler_x(){
         
-        return this.acceler_x;
+        return this.acceler.x;
     }
     get_acceler_z(){
         
-        return this.acceler_z;
+        return this.acceler.z;
     }
-    /*update_ball(){
-        var j=0;
-        for(j=0;j<ball_num;i++){
-            if(this!=ball[i]){
-                if(no_collision(this.pos_x,this.pos_z)==true){
-                    console.log('bati');
-                }
-            }
-        }
-    }*/
 }
 
 class Floor extends Entity {
@@ -142,45 +145,133 @@ function create_walls(){
     parede3=new Wall(126,0,0,125,Math.PI/2);
     parede4=new Wall(-126,0,0,125,Math.PI/2);
 }
-
-function collision(x,z,k){
-
-
-    for(j=0;j<ball_num;j++){
-        var new_x=ball[j].pos_x -x;
-        var new_z=ball[j].pos_z -z;
-        var distancia=Math.sqrt((new_x*new_x)+(new_z*new_z))
-        var a =0;
-        var b=0;
-        
-        if(distancia<Math.sqrt(250*250+125*125)/10){
-            //.log('sou outra bola')
-            a+=1;
-        }
-
-    }
+function check_wall(b){
     var prox_x=0;
     var prox_z=0;
-    prox_x=ball[k].get_pos_x();
-    prox_z=ball[k].get_pos_z()
+    var s=0;
+    prox_x=b.get_pos_x();
+    prox_z=b.get_pos_z();
     if(prox_x<0)
         prox_x=-prox_x;
     if(prox_z<0)
         prox_z=-prox_z;
-    console.log('estou na bola ',j);
-    if((prox_x+ball[k].get_radius()-125>0) ){
-        console.log('bati parede de lado com ', k);
-        ball[k].change_accel_x();
+    //console.log('estou na bola ',j);
+    if((prox_x+b.get_radius()-125>=0) ){
+        s++;
+        //console.log('bati parede de lado com ', k);
+        b.change_accel_x();
     }
-    if(prox_z+ball[k].get_radius()-62.5>0){
+    if(prox_z+b.get_radius()-62.5>=0){
+        s++;
+        b.change_accel_z();
+    }    
+    if(s>0){
+        var position_z= b.get_pos_z() +parseFloat(b.get_acceler_z());
+        var position_x= b.get_pos_x() + parseFloat(b.get_acceler_x());
+        b.put_x_z(position_x,position_z);
+        b.change_position();       
+    }
 
-        ball[k].change_accel_z();
+}
+function collision(x,z,k){
+    var a=0;
+    var b=0;
+    var j=0;
+    for(j=0;j<ball_num;j++){
+        var new_x=ball[j].pos_x -x;
+        var new_z=ball[j].pos_z -z;
+        var distancia=Math.sqrt((new_x*new_x)+(new_z*new_z))
+        if(j!=k){
+            if(checkCollision(ball[k],ball[j]))
+                a++;
+        }
+        
+
+        //check_wall(ball[k])
     }
-    if(a>1){
+
+    
+    if(a>0){
         return  true;
     }
     else
         return false;
+}
+
+
+function rotate(x, z, sin, cos, reverse) {
+    return {
+        x: (reverse) ? (x * cos + z * sin) : (x * cos - z * sin),
+        z: (reverse) ? (z * cos - x * sin) : (z * cos + x * sin)
+    };
+}
+
+function checkCollision (ball0, ball1) {
+  var dx = ball1.get_pos_x() - ball0.get_pos_x();
+  var dz = ball1.get_pos_z() - ball0.get_pos_z();
+  var dist = Math.sqrt(dx * dx + dz * dz);
+
+  //collision handling code here
+  if (dist < ball0.get_radius() + ball1.get_radius()) {
+    //calculate angle, sine, and cosine
+    var angle = Math.atan2(dz, dx),
+        sin = Math.sin(angle),
+        cos = Math.cos(angle), 
+
+        //rotate ball0's position
+        pos0 = {x: 0, z: 0}, //point
+
+        //rotate ball1's position
+        pos1 = rotate(dx, dz, sin, cos, true),
+
+        //rotate ball0's velocity
+        vel0 = rotate(ball0.get_acceler_x(), ball0.get_acceler_z(), sin, cos, true),
+
+        //rotate ball1's velocity
+        vel1 = rotate(ball1.get_acceler_x(), ball1.get_acceler_z(), sin, cos, true),
+
+        //collision reaction
+        vxTotal = vel0.x - vel1.x;
+    vel0.x = ((ball0.get_mass() - ball1.get_mass()) * vel0.x + 2 * ball1.get_mass() * vel1.x) /
+             (ball0.get_mass() + ball1.get_mass());
+    vel1.x = vxTotal + vel0.x;
+
+    //update position
+    pos0.x += vel0.x;
+    pos1.x += vel1.x;
+
+    //rotate positions back
+    var pos0F = rotate(pos0.x, pos0.z, sin, cos, false),
+        pos1F = rotate(pos1.x, pos1.z, sin, cos, false);
+
+    //adjust positions to actual screen positions
+    //ball1.put_x_z(ball1.get_pos_x() + pos1F.x ,ball1.get_pos_z() + pos1F.z)
+    //ball0.put_x_z(ball0.get_pos_x() + pos0F.x ,ball0.get_pos_z() + pos0F.z)
+
+    //rotate velocities back
+    var vel0F = rotate(vel0.x, vel0.z, sin, cos, false),
+        vel1F = rotate(vel1.x, vel1.z, sin, cos, false);
+
+    ball0.change_accel_x_to(vel0F.x);
+    ball0.change_accel_z_to(vel0F.z);
+    ball1.change_accel_x_to(vel1F.x);
+    ball1.change_accel_z_to(vel1F.z);
+
+    var position_z= ball1.get_pos_z() +parseFloat(ball1.get_acceler_z());
+    var position_x= ball1.get_pos_x() + parseFloat(ball1.get_acceler_x());
+    var posi_z= ball0.get_pos_z() +parseFloat(ball0.get_acceler_z());
+    var posi_x= ball0.get_pos_x() + parseFloat(ball0.get_acceler_x());
+    ball0.put_x_z(posi_x,posi_z);   
+    ball1.put_x_z(position_x,position_z);
+    check_wall(ball0);
+    check_wall(ball1);
+    ball1.change_position();
+    ball0.change_position();
+
+
+    return true;
+  }
+  return false;
 }
 
 function diferent_pos(x,z,num){
@@ -206,28 +297,14 @@ function diferent_pos(x,z,num){
 function move_balls(){
 
     for(i=0;i<ball_num;i++){
-        //console.log(i)
-        //console.log('velocidade antes memso antes ',ball[i].get_velocity());
-        //ball[i].change_velocity(ball[i].get_acceler());
-        //console.log('antes ',ball[i].get_pos_x() ,'   ',ball[i].get_acceler()*Math.cos(ball[i].get_teta()*Math.PI/180));
-        //console.log('velocidade antes ',ball[i].get_velocity());
-        //console.log('teta ',ball[i].get_teta())
-
-        //ball[i].put_x_z(position_x,position_z);
-        console.log('antes da colisoa', ball[i].get_acceler_x());
-        if(collision(ball[i].get_pos_x(), ball[i].get_pos_z(),i )){
-            //console.log('bati poi');
+        if(collision(ball[i].get_pos_x(), ball[i].get_pos_z(),i )==false){
+            var position_z= ball[i].get_pos_z() +parseFloat(ball[i].get_acceler_z());
+            var position_x= ball[i].get_pos_x() + parseFloat(ball[i].get_acceler_x());
+            ball[i].put_x_z(position_x,position_z);
+            check_wall(ball[i]);
+            ball[i].change_position();
         }
-        console.log('depoiis da colisoa', ball[i].get_acceler_x());
-        //console.log('antes');
-        var position_z= ball[i].get_pos_z() +parseFloat(ball[i].get_acceler_z());
-        var position_x= ball[i].get_pos_x() + parseFloat(ball[i].get_acceler_x());
-        ball[i].put_x_z(position_x,position_z);
-        ball[i].change_position();
-        //ball[i].change_position(position_x,position_z);
 
-        //console.log('depois',ball[i].get_pos_x());
-        //console.log('psoiçao x ',position_x ,'posicao z ',position_z);
     }
 }
 
@@ -245,7 +322,7 @@ function create_balls(){
         if(random_z<0)
             random_z+=raio;
         if(diferent_pos(random_x,random_z,num)){
-            ball.push(new Ball(random_x,0,random_z,0))
+            ball.push(new Ball(random_x,0,random_z,0,num))
             num++;
         }
     }
@@ -260,13 +337,6 @@ function createScene() {
     new Floor(0,0,0);
     create_walls();
     create_balls();
-}
-
-function clearScene(){
-    scene.remove(chair);
-    scene.remove(lamp);
-    scene.remove(table);
-    scene.remove(floor);
 }
 
 function createCamera() {
@@ -352,7 +422,6 @@ function init() {
     camera.lookAt(scene.position);
     render();
     onResize();
-    //setInterval(move_balls(),3000);
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", onResize);
 }
@@ -361,7 +430,5 @@ function animate() {
     'use strict';
     render();
     move_balls();
-    //setInterval(move_balls(),3000);
-    //setInterval(chage_all_vel(),1000*100);
     requestAnimationFrame(animate);
 }
