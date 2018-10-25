@@ -13,6 +13,7 @@ var ball_num=10;
 var perspetiva,ortegonal,ball_camera;
 var ZOOM=50;
 var ASPECT=1;
+var aument=0;
 
 class Entity extends THREE.Object3D{
     constructor(x,y,z){
@@ -61,6 +62,7 @@ class Ball extends Entity{
          
     }
     change_accel_x_to(a){
+        //console.log('em x',a);
         this.acceler.x=a;
     }  
     change_accel_z(){
@@ -68,6 +70,7 @@ class Ball extends Entity{
         this.acceler.z=-this.acceler.z;
     }
     change_accel_z_to(a){
+        //console.log('em z',a);
         this.acceler.z=a;
     }    
     change_position(){
@@ -151,21 +154,23 @@ class Wall extends Entity{
 
 function add_accel(){
     var i=0;
-    console.log('aumentei');
-    for(i=0;i<ball_num;i++){
-        if(ball[i].get_acceler_x()<0){
-            ball[i].change_accel_x_to(ball[i].get_acceler_x()-0.2);
+    if(aument<4)
+        console.log('aumentei');
+        for(i=0;i<ball_num;i++){
+            if(ball[i].get_acceler_x()<0){
+                ball[i].change_accel_x_to(ball[i].get_acceler_x()-0.2);
+            }
+            if(ball[i].get_acceler_z()<0){
+                ball[i].change_accel_z_to(ball[i].get_acceler_z()-0.2);
+            }
+            if(ball[i].get_acceler_x()>0){
+                ball[i].change_accel_x_to(ball[i].get_acceler_x()+0.2);
+            }
+            if(ball[i].get_acceler_z()>0){
+                ball[i].change_accel_z_to(ball[i].get_acceler_z()+0.2);
+            }
         }
-        if(ball[i].get_acceler_z()<0){
-            ball[i].change_accel_z_to(ball[i].get_acceler_z()-0.2);
-        }
-        if(ball[i].get_acceler_x()>0){
-            ball[i].change_accel_x_to(ball[i].get_acceler_x()+0.2);
-        }
-        if(ball[i].get_acceler_z()>0){
-            ball[i].change_accel_z_to(ball[i].get_acceler_z()+0.2);
-        }
-    }
+        aument++;
 }
 
 function create_walls(){
