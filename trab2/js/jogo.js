@@ -11,7 +11,7 @@ var ball=new Array();
 var accel_max=1;
 var ball_num=10;
 var perspetiva,ortegonal,ball_camera;
-var ZOOM=50;
+var ZOOM=5;
 var ASPECT=1;
 var aument=0;
 
@@ -78,8 +78,8 @@ class Ball extends Entity{
         this.position.set(this.pos_x,(Math.sqrt(250*250+125*125)/20),this.pos_z);
         if(ball_camera==1){
             
-            camera.position.z=ball[0].get_pos_z()+ (ball[0].get_acceler_z() / (Math.abs(ball[0].get_acceler_z()))*ball[0].get_radius()*3)  ;
-            camera.position.x=ball[0].get_pos_x()+ (ball[0].get_acceler_x() / (Math.abs(ball[0].get_acceler_x())) *ball[0].get_radius()*3);
+            camera.position.z=ball[0].get_pos_z()- (ball[0].get_acceler_z() / (Math.abs(ball[0].get_acceler_z()))*ball[0].get_radius()*3)  ;
+            camera.position.x=ball[0].get_pos_x()- (ball[0].get_acceler_x() / (Math.abs(ball[0].get_acceler_x())) *ball[0].get_radius()*3);
             camera.position.y=40;
             camera.lookAt(ball[0].position);
         }
@@ -185,15 +185,14 @@ function check_wall(b){
     var s=0;
     prox_x=b.get_pos_x()+b.get_acceler_x();
     prox_z=b.get_pos_z()+b.get_acceler_z();
-    //console.log(prox_x);
+
     if(prox_x<0)
         prox_x=-prox_x;
     if(prox_z<0)
         prox_z=-prox_z;
-    //console.log('estou na bola ',j);
+
     if((prox_x+b.get_radius()-125>=0) ){
         s++;
-        //console.log('bati parede de lado com ', k);
         b.change_accel_x();
     }
     if(prox_z+b.get_radius()-62.5>=0){
@@ -236,6 +235,7 @@ function rotate(x, z, sin, cos, reverse) {
 }
 
 function checkCollision (ball0, ball1) {
+  //to make the verification of the collision, use the next position, not the current
   var posit_z= ball0.get_pos_z() +parseFloat(ball0.get_acceler_z());
   var posit_x= ball0.get_pos_x() + parseFloat(ball0.get_acceler_x());
 
@@ -243,39 +243,31 @@ function checkCollision (ball0, ball1) {
   var dz = ball1.get_pos_z() - posit_z;
   var dist = Math.sqrt(dx * dx + dz * dz);
 
-  //collision handling code here
+  
   if (dist < ball0.get_radius() + ball1.get_radius()) {
-    //calculate angle, sine, and cosine
+
     var angle = Math.atan2(dz, dx),
         sin = Math.sin(angle),
         cos = Math.cos(angle), 
 
-        //rotate ball0's position
-        pos0 = {x: 0, z: 0}, //point
-
-        //rotate ball1's position
-        pos1 = rotate(dx, dz, sin, cos, true),
-
-        //rotate ball0's velocity
+        //rotate the vector of velocity to work only on x
         vel0 = rotate(ball0.get_acceler_x(), ball0.get_acceler_z(), sin, cos, true),
 
-        //rotate ball1's velocity
         vel1 = rotate(ball1.get_acceler_x(), ball1.get_acceler_z(), sin, cos, true),
 
-        //collision reaction
         vxTotal = vel0.x - vel1.x;
 
     vel0.x = ((ball0.get_mass() - ball1.get_mass()) * vel0.x + 2 * ball1.get_mass() * vel1.x) /
              (ball0.get_mass() + ball1.get_mass());
     vel1.x = vxTotal + vel0.x;
 
-    //update position
+   /*
     pos0.x += vel0.x;
     pos1.x += vel1.x;
 
-    //rotate positions back
+
     var pos0F = rotate(pos0.x, pos0.z, sin, cos, false),
-        pos1F = rotate(pos1.x, pos1.z, sin, cos, false);
+        pos1F = rotate(pos1.x, pos1.z, sin, cos, false);*/
 
     //adjust positions to actual screen positions
     //ball1.put_x_z(ball1.get_pos_x() + pos1F.x ,ball1.get_pos_z() + pos1F.z)
@@ -289,15 +281,18 @@ function checkCollision (ball0, ball1) {
     ball0.change_accel_z_to(vel0F.z);
     ball1.change_accel_x_to(vel1F.x);
     ball1.change_accel_z_to(vel1F.z);
-
+    //use this positions just to separate the balls, the move it self will be done later
     var position_z= ball1.get_pos_z() +parseFloat(ball1.get_acceler_z())/2;
     var position_x= ball1.get_pos_x() + parseFloat(ball1.get_acceler_x())/2;
     var posi_z= ball0.get_pos_z() +parseFloat(ball0.get_acceler_z())/2;
     var posi_x= ball0.get_pos_x() + parseFloat(ball0.get_acceler_x())/2;
+    //only change the position, but doesnt redraw the balls
     ball0.put_x_z(posi_x,posi_z);   
     ball1.put_x_z(position_x,position_z);
+    //verify if the new position collides with the walls
     check_wall(ball0);
     check_wall(ball1);
+    //and then draw the balls
     ball1.change_position();
     ball0.change_position();
 
@@ -329,16 +324,14 @@ function diferent_pos(x,z,num){
 
 function move_balls(){
     for(i=0;i<ball_num;i++){
-        //console.log(ball[i].get_acceler_x());
-        //console.log(ball[i].get_acceler_z())
         if(collision(ball[i].get_pos_x(), ball[i].get_pos_z(),i )==false){
+            //normal move of the balls when not colliding
             var old_position_z = ball[i].get_pos_z()
             var old_position_x = ball[i].get_pos_x()
             var position_z= old_position_z +parseFloat(ball[i].get_acceler_z());
             var position_x= old_position_x + parseFloat(ball[i].get_acceler_x());
             ball[i].rotation.z += (position_z - old_position_z) / ball[i].get_radius()
-            ball[i].rotation.x += (position_x - old_position_x) / ball[i].get_radius()
-            //ball[i].rotateOnAxis ((0,0,1), ball[i].rotation.z) 
+            ball[i].rotation.x += (position_x - old_position_x) / ball[i].get_radius() 
             ball[i].put_x_z(position_x,position_z);
             check_wall(ball[i]);
             ball[i].change_position()
@@ -387,14 +380,14 @@ function createCamera() {
     camera2.position.z = -200;
     camera2.position.x = 300;
     camera2.position.y = 200;
-    camera3 = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,150, 10000);
-    camera3.position.z = 0;
-    camera3.position.x = 300;
-    camera3.position.y = 300;
-    camera4=new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera4.position.z=ball[0].get_pos_x();
-    camera4.position.x=ball[0].get_pos_z();
-    camera4.position.y=50;
+    camera4 = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,150, 10000);
+    camera4.position.z = 0;
+    camera4.position.x = 300;
+    camera4.position.y = 300;
+    camera3=new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera3.position.z=ball[0].get_pos_x();
+    camera3.position.x=ball[0].get_pos_z();
+    camera3.position.y=50;
    // camera.lookAt(scene.position);
 }
 
@@ -443,22 +436,6 @@ function resize_Aux() {
     return {w: width, h: height}
 }
 
-/*function onResize() {
-    'use strict';
-    var sceneSize = 300;
-    wWidth = window.innerWidth;
-    wHeight = window.innerHeight;
-    var aspect = wWidth / wHeight;
-    var change = originalAspect / aspect;
-    var newSize = sceneSize * change;
-    camera.left = -aspect * newSize / 2;
-    camera.right = aspect * newSize  / 2;
-    camera.top = newSize / 2;
-    camera.bottom = -newSize / 2;
-    camera.updateProjectionMatrix();
-    renderer.setSize(wWidth, wHeight);
-    camera.lookAt(scene.position);
-}*/
 
 function render() {
     'use strict';
@@ -487,16 +464,17 @@ function onKeyDown(e) {
         camera=camera3;
         perspetiva=1;
         ortegonal=0;
-        ball_camera=0;
-        camera.lookAt(scene.position);
+        ball_camera=1;
+        camera.lookAt(ball[0].position);
+        
         render();
         break;
     case 52:
         camera=camera4;
         perspetiva=1;
-        ball_camera=1;
+        ball_camera=0;
         ortegonal=0;
-        camera.lookAt(ball[0].position);
+        camera.lookAt(scene.position);
         render();
         break;
     case 69:  //E
