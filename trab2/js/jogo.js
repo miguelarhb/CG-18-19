@@ -8,10 +8,10 @@ var wHeight = window.innerHeight;
 var originalAspect = wWidth / wHeight;
 var floor,parede1,parede2,parede3,parede4,num;
 var ball=new Array();
-var accel_max=1;
+var accel_max=20;
 var ball_num=10;
 var perspetiva,ortegonal,ball_camera;
-var ZOOM=5;
+var ZOOM=3;
 var ASPECT=1;
 var aument=0;
 
@@ -499,12 +499,16 @@ function init() {
     createScene();
     createCamera();
     camera=camera1;
+    perspetiva=0;
+    ortegonal=1;
+    ball_camera=0;
     camera.lookAt(scene.position);
     render();
     onResize();
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", onResize);
     setInterval(add_accel,1000*60);
+    //setInterval(move_balls,25);
 }
 
 function animate() {
