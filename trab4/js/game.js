@@ -11,9 +11,12 @@ var phong=1;
 var rubix;
 var pool_ball;
 var board;
+<<<<<<< HEAD
 var menu;
 var controls;
 var paused=false;
+=======
+>>>>>>> f09dd7b50c71fc1a64f7202b1dd161afea1f499e
 
 
 
@@ -26,11 +29,19 @@ function createScene() {
     board = new Floor(0,0,0);
     rubix= new Cube(0,10,0);
     pool_ball= new Ball(-30,5,15);
+<<<<<<< HEAD
     menu=new Pause(0,35,0);
     menu.visible=false;
     createSun();
     createholophote();
 
+=======
+    createSun();
+    createholophote();
+
+
+
+>>>>>>> f09dd7b50c71fc1a64f7202b1dd161afea1f499e
 }
 
 
@@ -58,6 +69,7 @@ function render() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 }
+<<<<<<< HEAD
 function pause_game(){
 	menu.visible=!menu.visible;
 }
@@ -76,6 +88,12 @@ function reset_game(){
 
 	}
 }
+=======
+
+
+
+
+>>>>>>> f09dd7b50c71fc1a64f7202b1dd161afea1f499e
 
 
 function onKeyUp(){
@@ -91,6 +109,7 @@ function onKeyDown(e) {
     'use strict';
     
     switch (e.keyCode) {
+<<<<<<< HEAD
 
     case 68:
     case 108: //D
@@ -114,6 +133,78 @@ function onKeyDown(e) {
     }
 
 
+=======
+    case 49: //1
+        turn_on_off(holopho[0]);         
+
+        break;
+    case 50://2
+        turn_on_off(holopho[1]);
+ 
+        break;
+    case 51://3
+        turn_on_off(holopho[2]);  
+        break;
+    case 52://4
+        turn_on_off(holopho[3]);
+  
+        break;
+    case 53: //5
+        camera=camera1;
+        camera.lookAt(scene.position);
+        break;
+    case 54://6
+        camera=camera2;
+        camera.lookAt(scene.position);
+        break;
+    case 55://7
+        camera=camera4;
+        camera.lookAt(holopho[0].position);
+        break;
+    case 56://7
+        camera=camera3;
+        camera.lookAt(new THREE.Vector3(-100, 15, -2));
+        break;
+    case 69:  //E
+    case 101: //e
+        scene.traverse(function (node) {
+            if (node instanceof THREE.AxisHelper) {
+                node.visible = !node.visible;
+            }
+        });
+        break;
+/*    case 37://left
+        teta=-1;
+        console.log('rodar');
+        plane.rotation.y+=teta*Math.PI/180; 
+
+        break;
+    case 39:
+        teta=1;
+        console.log('rodar');
+        plane.rotation.y+=teta*Math.PI/180;
+        break;
+    case 40://down
+        teta=-1;
+        console.log('rodar');
+        plane.rotation.z+=teta*Math.PI/180;
+        break;
+    case 38://up
+        teta=1;
+        console.log('rodar');
+        plane.rotation.z+=teta*Math.PI/180;
+        break;*/
+    case 78: //N
+        switchSun();
+        break;
+    case 76: //L
+        switchIlumination();
+        break;
+    case 71: //G
+        switchMaterial();
+        break;
+    }
+>>>>>>> f09dd7b50c71fc1a64f7202b1dd161afea1f499e
 }
 
 function init() {
@@ -129,9 +220,13 @@ function init() {
     createCamera();
     camera=camera1;
     camera.lookAt(scene.position);
+<<<<<<< HEAD
     controls = new THREE.OrbitControls(camera);
     controls.update();
     controls.saveState();
+=======
+    var controls = new THREE.OrbitControls(camera);
+>>>>>>> f09dd7b50c71fc1a64f7202b1dd161afea1f499e
    
     render();
     onResize();
@@ -143,10 +238,14 @@ function init() {
 function animate() {
     'use strict';
     render();
+<<<<<<< HEAD
     controls.update();
     //console.log(camera.position);
     //controls.update();
     change_pause();
 
+=======
+    //controls.update();
+>>>>>>> f09dd7b50c71fc1a64f7202b1dd161afea1f499e
     requestAnimationFrame(animate);
 }
