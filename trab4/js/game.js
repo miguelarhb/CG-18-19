@@ -57,24 +57,32 @@ function render() {
     renderer.render(scene, camera);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    //change_pause();
 }
 function pause_game(){
 	menu.visible=!menu.visible;
+	paused=!paused;
+	if(paused==true)
+		camera.lookAt(menu.position);
+	if(paused==false)
+		camera.lookAt(scene.position);
 }
 
 function change_pause(){
 	menu.change_position(camera);
-	paused=true;
+
+	
 }
 
 function reset_game(){
+	console.log(paused);
 	if(paused==true){
 		controls.reset();
 		pool_ball.reset();
 		menu.visible=!menu.visible;
-		paused=false;
-
+		turn_all_on();
 	}
+	paused=false;
 }
 
 
@@ -94,22 +102,28 @@ function onKeyDown(e) {
 
     case 68:
     case 108: //D
-        switchSun();
+    	if(paused==false)
+        	switchSun();
         break;
     case 112:
     case 80: //P
-    	pool_ball.position.set(30,5,15);
-        turn_on_off();
+    	if(paused==false){
+    		pool_ball.position.set(30,5,15);
+        	turn_on_off();
+        }
         break;
 
     case 76: //L
-        switchIlumination();
+    	if(paused==false)
+        	switchIlumination();
         break; 
     case 83: //S
     	pause_game();
     	break;
-    case 82:
+
+    case 82: //R
     	reset_game();
+    	break;
 
     }
 
@@ -138,6 +152,7 @@ function init() {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
+    setInterval(change_pause,1000*0.1);
 }
 
 function animate() {
@@ -146,7 +161,7 @@ function animate() {
     controls.update();
     //console.log(camera.position);
     //controls.update();
-    change_pause();
+    
 
     requestAnimationFrame(animate);
 }

@@ -40,6 +40,12 @@ function switchSun(){
     }*/
 }
 
+function turn_all_on(){
+	light.visible=true;
+	sun.visible=true;
+}
+
+
 function turn_on_off(){
     light.visible = !light.visible;
 }
