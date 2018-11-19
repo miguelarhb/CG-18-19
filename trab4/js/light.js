@@ -16,8 +16,9 @@ function createholophote(){
     light = new THREE.PointLight(0xffffff,1.5,50);
     
     light.position.set( -30, 15, 0  );
-    //light.target.set(10 , 0, -10 );
-    cone1=new Cone(-35,25,0);
+    lightHelper = new THREE.PointLightHelper( light);
+    //scene.add( lightHelper );
+    cone1=new Cone(-30,30,0);
     light.castShadow = true;
     scene.add( light);
  

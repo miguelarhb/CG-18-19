@@ -6,7 +6,8 @@ var rubix;
 var pool_ball;
 var board;
 var theta;
-
+var clock = new THREE.Clock();
+var delta;
 
 
 
@@ -33,7 +34,7 @@ class Cone extends Entity{
         console.log('posicionei');
         console.log('mudei 0');
             
-        this.rotation.z=-Math.PI/1.2 ;
+        this.rotation.z=-Math.PI ;
 
         scene.add(this);
     }
@@ -48,6 +49,12 @@ class Ball extends Entity{
         this.x=x;
         this.y=y;
         this.z=z;
+        this.radius=Math.sqrt(x*x+z*z);
+        this.velocity=0.5;
+        this.alpha=0;
+        this.paused=false;
+
+        //var helper=new THREE.AxisHelper(20);
         texture=THREE.ImageUtils.loadTexture( 'js/img/ball.png' );
         //texture.crossOrigin = "Anonymous"
         texture.wrapS = THREE.repeatWrapping; 
@@ -55,17 +62,44 @@ class Ball extends Entity{
         texture.repeat.set(1,1);
 
         geometry=new THREE.SphereGeometry(5,50,50);
-        material=new THREE.MeshPhongMaterial({map:texture,wireframe:false,specular: 0xdddddd});
+        material=new THREE.MeshPhongMaterial({map:texture,wireframe:false,specular: 0xdddddd, shininess:60});
         mesh=new THREE.Mesh(geometry,material);
         mesh.receiveShadow = true;
         mesh.castShadow = true;
         this.add(mesh);
+        //this.add(helper);
         this.position.set(x,y,z);
         scene.add(this);
     }
     reset(){
     	this.position.set(this.init_x,this.init_y,this.init_z);
+        this.alpha=0;
+        this.paused=false;
+    }
+    update(){
+        if(this.paused==false){
+            delta= clock.getDelta();
+            this.alpha+=this.velocity*delta;
+        }
+        
+        this.x=Math.sin(this.alpha)*this.radius;
+        this.z=Math.cos(this.alpha)*this.radius;
+        
+        this.position.set(this.x,this.y,this.z);
+        this.rotation.y=this.alpha;
 
+
+
+    }
+    pause(){
+        //console.log('parei');
+        clock.stop();
+        this.paused=true;
+    }
+
+    continue(){
+        clock.start();
+        this.paused=false;
     }
 
 }
@@ -87,7 +121,8 @@ class Cube extends Entity{
         bump.wrapT = THREE.repeatWrapping;
         bump.repeat.set(1,1);
         geometry=new THREE.BoxGeometry(20,20,20,10,10);
-        material=new THREE.MeshPhongMaterial({map:texture,bumpMap:bump,emissive : new THREE.Color("rgb(7,3,5)"),wireframe:false});
+        material=new THREE.MeshPhongMaterial({map:texture,bumpMap:bump,wireframe:false,shininess: 40});
+        material.bumpScale=1;
         mesh=new THREE.Mesh(geometry,material);
         mesh.receiveShadow = true;
         mesh.castShadow = true;
@@ -135,7 +170,7 @@ class Pause extends Entity{
         texture.wrapT = THREE.repeatWrapping;
         texture.repeat.set(1,1);
 
-        geometry=new THREE.PlaneGeometry(20,10,50,50);
+        geometry=new THREE.PlaneGeometry(10,5,50,50);
         material=new THREE.MeshBasicMaterial({map:texture,wireframe:false});
 
         mesh=new THREE.Mesh(geometry,material);
@@ -146,7 +181,7 @@ class Pause extends Entity{
 
     change_position(camera){
 
-        this.position.copy( camera.position );
+       this.position.copy( camera.position );
 		this.rotation.copy( camera.rotation );
 		this.updateMatrix();
 		this.translateZ( - 10 );

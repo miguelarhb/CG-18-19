@@ -25,7 +25,7 @@ function createScene() {
     //createholophote();
     board = new Floor(0,0,0);
     rubix= new Cube(0,10,0);
-    pool_ball= new Ball(-30,5,15);
+    pool_ball= new Ball(-30,5,30);
     menu=new Pause(0,35,0);
     menu.visible=false;
     createSun();
@@ -62,10 +62,15 @@ function render() {
 function pause_game(){
 	menu.visible=!menu.visible;
 	paused=!paused;
-	if(paused==true)
-		camera.lookAt(menu.position);
-	if(paused==false)
+    
+	if(paused==true){
+        pool_ball.pause();
+		//camera.lookAt(menu.position);
+    }
+	if(paused==false){
+        pool_ball.continue();
 		camera.lookAt(scene.position);
+    }
 }
 
 function change_pause(){
@@ -75,7 +80,7 @@ function change_pause(){
 }
 
 function reset_game(){
-	console.log(paused);
+	
 	if(paused==true){
 		controls.reset();
 		pool_ball.reset();
@@ -108,7 +113,6 @@ function onKeyDown(e) {
     case 112:
     case 80: //P
     	if(paused==false){
-    		pool_ball.position.set(30,5,15);
         	turn_on_off();
         }
         break;
@@ -152,13 +156,14 @@ function init() {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
-    setInterval(change_pause,1000*0.1);
+    setInterval(change_pause,1000*0.2);
 }
 
 function animate() {
     'use strict';
     render();
     controls.update();
+    pool_ball.update();
     //console.log(camera.position);
     //controls.update();
     
