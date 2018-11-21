@@ -1,13 +1,13 @@
 /*global THREE, requestAnimationFrame, console*/
 
 
-var geometry,material,mesh,texture,bump;
+var geometry,material,mesh,texture,bump, wfh_c = 0, wfh_b = 0, wfh_f = 0;
 var rubix;
 var pool_ball;
 var board;
 var theta;
-var clock = new THREE.Clock();
 var delta;
+var angle;
 
 
 
@@ -49,12 +49,12 @@ class Ball extends Entity{
         this.x=x;
         this.y=y;
         this.z=z;
-        this.radius=Math.sqrt(x*x+z*z);
+        this.radius_move=Math.sqrt(x*x+z*z);
         this.velocity=0.5;
         this.alpha=0;
         this.paused=false;
-
-        //var helper=new THREE.AxisHelper(20);
+        clock.start();
+        var helper=new THREE.AxisHelper(20);
         texture=THREE.ImageUtils.loadTexture( 'js/img/ball.png' );
         //texture.crossOrigin = "Anonymous"
         texture.wrapS = THREE.repeatWrapping; 
@@ -76,30 +76,44 @@ class Ball extends Entity{
         this.alpha=0;
         this.paused=false;
     }
-    update(){
-        if(this.paused==false){
-            delta= clock.getDelta();
-            this.alpha+=this.velocity*delta;
-        }
+    update(delta){
         
-        this.x=Math.sin(this.alpha)*this.radius;
-        this.z=Math.cos(this.alpha)*this.radius;
+            
+        angle=this.alpha;
+        this.alpha+=this.velocity*delta;
+        angle-=this.alpha;
+
+        var new_pos_x=Math.sin(this.alpha)*this.radius_move;
+        var new_pos_z=Math.cos(this.alpha)*this.radius_move;
+        /*var dis_x=Math.abs(new_pos_x - this.x);
+        var dis_z=Math.abs(new_pos_z - this.z);*/
+        var dist=angle*this.radius_move;
+        this.x=new_pos_x;
+        this.z=new_pos_z;
         
         this.position.set(this.x,this.y,this.z);
         this.rotation.y=this.alpha;
+        this.rotation.z+=Math.atan2(dist,5);
+        //this.rotation.x+=Math.atan2(dis_x,5);
 
 
 
     }
     pause(){
         //console.log('parei');
-        clock.stop();
+        //clock.stop();
         this.paused=true;
+        this.angle=0;
     }
 
     continue(){
-        clock.start();
+        //clock.start();
         this.paused=false;
+    }
+    wireframe(){
+        console.log(this);
+        var bool = this.children["0"].material.wireframe;
+        this.children["0"].material.wireframe = !bool;
     }
 
 }
@@ -120,7 +134,7 @@ class Cube extends Entity{
         bump.wrapS = THREE.repeatWrapping; 
         bump.wrapT = THREE.repeatWrapping;
         bump.repeat.set(1,1);
-        geometry=new THREE.BoxGeometry(20,20,20,10,10);
+        geometry=new THREE.BoxGeometry(20,20,20,20,20);
         material=new THREE.MeshPhongMaterial({map:texture,bumpMap:bump,wireframe:false,shininess: 40});
         material.bumpScale=1;
         mesh=new THREE.Mesh(geometry,material);
@@ -129,6 +143,11 @@ class Cube extends Entity{
         this.add(mesh);
         this.position.set(x,y,z);
         scene.add(this);
+    }
+    wireframe(){
+        console.log(this);
+        var bool = this.children["0"].material.wireframe;
+        this.children["0"].material.wireframe = !bool;
     }
 
 }
@@ -155,6 +174,11 @@ class Floor extends Entity{
         this.position.set(x,y,z);
         scene.add(this);
     }
+    wireframe(){
+        console.log(this);
+        var bool = this.children["0"].material.wireframe;
+        this.children["0"].material.wireframe = !bool;
+    }   
 }
 
 
@@ -170,22 +194,16 @@ class Pause extends Entity{
         texture.wrapT = THREE.repeatWrapping;
         texture.repeat.set(1,1);
 
-        geometry=new THREE.PlaneGeometry(10,5,50,50);
+        geometry=new THREE.PlaneGeometry(400,200,50,50);
         material=new THREE.MeshBasicMaterial({map:texture,wireframe:false});
 
         mesh=new THREE.Mesh(geometry,material);
+        mesh.rotation.x-=Math.PI /2;
         this.add(mesh);
         this.position.set(x,y,z);
-        scene.add(this);
+        scene2.add(this);
     }
 
-    change_position(camera){
-
-       this.position.copy( camera.position );
-		this.rotation.copy( camera.rotation );
-		this.updateMatrix();
-		this.translateZ( - 10 );
-    }
 
 }
     

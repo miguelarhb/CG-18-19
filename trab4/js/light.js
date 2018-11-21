@@ -25,10 +25,9 @@ function createholophote(){
 }
 
 function createSun(){
-    /*ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);*/
 
-    sun = new THREE.DirectionalLight(0xffffff, 0.6);
+
+    sun = new THREE.DirectionalLight(0xffffff, 0.8);
     sun.position.set( 30, 100, 30);
     sun.castShadow=true;
     scene.add(sun);
@@ -36,9 +35,7 @@ function createSun(){
 
 function switchSun(){
     sun.visible = !sun.visible;
-    /*for (i=0;i<4;i++){
-        holopho[i].visible = !flag;
-    }*/
+
 }
 
 function turn_all_on(){

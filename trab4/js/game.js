@@ -1,7 +1,7 @@
 /*global THREE, requestAnimationFrame, console*/
 
-var camera, scene, renderer;
-var camera1, camera2,camera3,camera4;
+var camera, scene,scene2, renderer;
+var camera1, camera2,camera3,camera4,camera_pause;
 var wWidth = window.innerWidth;
 var wHeight = window.innerHeight;
 var originalAspect = wWidth / wHeight;
@@ -14,24 +14,10 @@ var board;
 var menu;
 var controls;
 var paused=false;
+var moving=true;
+var clock = new THREE.Clock();
 
 
-
-function createScene() {
-    'use strict';
-    scene = new THREE.Scene();
-    scene.add(new THREE.AxisHelper(10));
-    //createSun();
-    //createholophote();
-    board = new Floor(0,0,0);
-    rubix= new Cube(0,10,0);
-    pool_ball= new Ball(-30,5,30);
-    menu=new Pause(0,35,0);
-    menu.visible=false;
-    createSun();
-    createholophote();
-
-}
 
 
 
@@ -47,41 +33,49 @@ function onResize() {
     camera.right = aspect * newSize  / 2;
     camera.top = newSize / 2;
     camera.bottom = -newSize / 2;
+    camera.aspect=aspect;
     camera.updateProjectionMatrix();
     renderer.setSize(wWidth, wHeight);
     camera.lookAt(scene.position);
+    camera_pause.lookAt(scene2.position);
 }
 
-function render() {
-    'use strict';
-    renderer.render(scene, camera);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    //change_pause();
-}
+
 function pause_game(){
 	menu.visible=!menu.visible;
 	paused=!paused;
     
 	if(paused==true){
+        moving=false;
+        clock.stop();
         pool_ball.pause();
-		//camera.lookAt(menu.position);
     }
 	if(paused==false){
+        moving=true;
         pool_ball.continue();
-		camera.lookAt(scene.position);
+        clock.start();
+		
     }
 }
 
-function change_pause(){
-	menu.change_position(camera);
 
-	
+function pause_ball(){
+    if(!paused)
+        moving=!moving;
+    if(moving){
+        clock.start();
+        pool_ball.continue();
+    }
+    else{
+        clock.stop();
+        pool_ball.pause();
+    }
 }
-
 function reset_game(){
 	
 	if(paused==true){
+        clock.start();
+        pool_ball.continue();
 		controls.reset();
 		pool_ball.reset();
 		menu.visible=!menu.visible;
@@ -99,7 +93,11 @@ function onKeyUp(){
   
 
 }
-
+function switchWireframes(){
+    rubix.wireframe();
+    pool_ball.wireframe();
+    board.wireframe();
+}
 function onKeyDown(e) {
     'use strict';
     
@@ -129,9 +127,59 @@ function onKeyDown(e) {
     	reset_game();
     	break;
 
+    case 87: //W
+        switchWireframes();
+        break;
+    case 66: //B
+        pause_ball();
+        break;
+
+
     }
 
 
+}
+
+function update_game(){
+    controls.update();
+    if(clock.running){
+        delta= clock.getDelta();
+        pool_ball.update(delta);
+    }
+}
+
+function createScene() {
+    'use strict';
+    scene = new THREE.Scene();
+    scene.add(new THREE.AxisHelper(10));
+    scene2=new THREE.Scene();
+    //createSun();
+    //createholophote();
+    board = new Floor(0,0,0);
+    rubix= new Cube(0,10,0);
+    pool_ball= new Ball(-30,5,30);
+    menu=new Pause(0,10,0);
+    menu.visible=false;
+    createSun();
+    createholophote();
+
+}
+
+
+function render() {
+    'use strict';
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    renderer.autoClear = false;
+    renderer.clear();
+    renderer.setViewport( 0, 0, window.innerWidth, window.innerHeight );
+    renderer.render(scene, camera);
+    renderer.clearDepth();
+    renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+    renderer.render(scene2,camera_pause);
+
+    //change_pause();
 }
 
 function init() {
@@ -140,32 +188,36 @@ function init() {
         antialias: true
     });
     renderer.shadowMap.enabled = true;
+    renderer.autoClear = false;
 	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     createScene();
     createCamera();
+
     camera=camera1;
     camera.lookAt(scene.position);
+    camera_pause=camera2;
+    
     controls = new THREE.OrbitControls(camera);
     controls.update();
     controls.saveState();
-   
+
+    camera.updateMatrixWorld ( false );
+    camera_pause.updateMatrixWorld ( false );
+
     render();
     onResize();
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
-    setInterval(change_pause,1000*0.2);
+    
 }
 
 function animate() {
     'use strict';
     render();
-    controls.update();
-    pool_ball.update();
-    //console.log(camera.position);
-    //controls.update();
+    update_game();
     
 
     requestAnimationFrame(animate);
